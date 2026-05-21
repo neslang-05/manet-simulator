@@ -1,0 +1,1002 @@
+% ============================================================
+%  MANET Laboratory Guide
+%  NS-3, NetAnim & MANET Research Platform
+%  Repository: https://github.com/neslang-05/manet-simulator
+% ============================================================
+
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ─────────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{fontenc}
+\usepackage{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{parskip}
+
+% ── Color Definitions ────────────────────────────────────────
+\definecolor{darkblue}{RGB}{0, 51, 102}
+\definecolor{codeblue}{RGB}{0, 80, 160}
+\definecolor{codegray}{RGB}{248, 249, 250}
+\definecolor{codered}{RGB}{180, 30, 30}
+\definecolor{codegreen}{RGB}{34, 139, 34}
+\definecolor{bordercolor}{RGB}{222, 226, 230}
+\definecolor{warnyellow}{RGB}{255, 193, 7}
+\definecolor{infoblue}{RGB}{13, 110, 253}
+\definecolor{successgreen}{RGB}{25, 135, 84}
+\definecolor{dangered}{RGB}{220, 53, 69}
+
+% ── Hyperref Setup ───────────────────────────────────────────
+\hypersetup{
+    colorlinks   = true,
+    linkcolor    = darkblue,
+    urlcolor     = codeblue,
+    citecolor    = darkblue,
+    pdfauthor    = {MANET Lab},
+    pdftitle     = {MANET Laboratory Guide: NS-3, NetAnim \& Simulation Platform},
+    pdfsubject   = {Mobile Ad-Hoc Network Laboratory},
+    pdfkeywords  = {MANET, NS-3, NetAnim, AODV, DSDV, DSR, OLSR, WSL2}
+}
+
+% ── Listings (Code Block) Setup ──────────────────────────────
+\lstdefinestyle{bash}{
+    backgroundcolor  = \color{codegray},
+    basicstyle       = \ttfamily\small,
+    breakatwhitespace= false,
+    breaklines       = true,
+    captionpos       = b,
+    commentstyle     = \color{codegreen}\itshape,
+    frame            = single,
+    framerule        = 0.5pt,
+    rulecolor        = \color{bordercolor},
+    keepspaces       = true,
+    keywordstyle     = \color{darkblue}\bfseries,
+    language         = bash,
+    morekeywords     = {sudo,apt,wsl,python3,pip3,pip,git,cmake,make,qmake,./ns3,cd,ls,export,echo,source},
+    numbers          = left,
+    numbersep        = 8pt,
+    numberstyle      = \tiny\color{gray},
+    showspaces       = false,
+    showstringspaces = false,
+    showtabs         = false,
+    stringstyle      = \color{codered},
+    tabsize          = 2,
+    xleftmargin      = 1.5em,
+}
+
+\lstdefinestyle{output}{
+    backgroundcolor  = \color{black!90},
+    basicstyle       = \ttfamily\small\color{white!90},
+    breaklines       = true,
+    frame            = none,
+    keepspaces       = true,
+    numbers          = none,
+    showspaces       = false,
+    showstringspaces = false,
+    xleftmargin      = 1.5em,
+}
+
+\lstset{style=bash}
+
+% ── tcolorbox Environments ───────────────────────────────────
+\tcbuselibrary{skins, breakable}
+
+\newenvironment{notebox}
+  {\begin{tcolorbox}[
+      colback   = infoblue!8,
+      colframe  = infoblue,
+      fonttitle = \bfseries,
+      title     = \textcolor{infoblue}{$\blacktriangleright$\; Note},
+      breakable
+  ]}
+  {\end{tcolorbox}}
+
+\newenvironment{warnbox}
+  {\begin{tcolorbox}[
+      colback   = warnyellow!15,
+      colframe  = warnyellow!80!black,
+      fonttitle = \bfseries,
+      title     = \textcolor{warnyellow!80!black}{$\triangle$\; Warning},
+      breakable
+  ]}
+  {\end{tcolorbox}}
+
+\newenvironment{tipbox}
+  {\begin{tcolorbox}[
+      colback   = successgreen!8,
+      colframe  = successgreen,
+      fonttitle = \bfseries,
+      title     = \textcolor{successgreen}{$\checkmark$\; Tip},
+      breakable
+  ]}
+  {\end{tcolorbox}}
+
+\newenvironment{errorbox}
+  {\begin{tcolorbox}[
+      colback   = dangered!8,
+      colframe  = dangered,
+      fonttitle = \bfseries,
+      title     = \textcolor{dangered}{$\times$\; Error / Fix},
+      breakable
+  ]}
+  {\end{tcolorbox}}
+
+% ── Section Formatting ───────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{darkblue}}{\thesection}{0.8em}{}[\titlerule]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{darkblue!80}}{\thesubsection}{0.6em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{darkblue!60}}{\thesubsubsection}{0.5em}{}
+
+% ── Header / Footer ──────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{darkblue}{\textbf{MANET Laboratory Guide}}}
+\fancyhead[R]{\small\textcolor{gray}{NS-3, NetAnim \& Simulation Platform}}
+\fancyfoot[C]{\small\thepage}
+\fancyfoot[R]{\small\textcolor{gray}{\href{https://github.com/neslang-05/manet-simulator}{github.com/neslang-05/manet-simulator}}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ── Custom Commands ───────────────────────────────────────────
+\newcommand{\cmd}[1]{\texttt{\color{codeblue}#1}}
+\newcommand{\file}[1]{\texttt{\color{codered}#1}}
+\newcommand{\pkg}[1]{\texttt{\color{codegreen}#1}}
+\newcommand{\protocol}[1]{\textbf{\textcolor{darkblue}{#1}}}
+
+
+% ══════════════════════════════════════════════════════════════
+\begin{document}
+% ══════════════════════════════════════════════════════════════
+
+% ── Title Block ──────────────────────────────────────────────
+\begin{center}
+  {\huge\bfseries\color{darkblue} MANET Laboratory Guide}\\[0.6em]
+  {\large\color{gray} NS-3 \textbullet\ NetAnim \textbullet\ MANET Research Platform}\\[0.3em]
+  {\normalsize\href{https://github.com/neslang-05/manet-simulator}{\texttt{https://github.com/neslang-05/manet-simulator}}}\\[1em]
+  \hrule height 1.5pt
+\end{center}
+
+\vspace{0.5em}
+
+\begin{abstract}
+This guide provides a complete walkthrough for setting up a Mobile Ad-Hoc Network (MANET) simulation environment on a Windows machine using WSL2 (Ubuntu), NS-3, NetAnim, and the MANET Research Platform. It covers installation of all required software components, configuration of the simulation environment, execution of MANET protocol simulations (AODV, DSDV, DSR, OLSR), visualization of results in NetAnim, and analysis of performance metrics. All steps are verified on Windows 11 with WSL2 Ubuntu 22.04 LTS.
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+
+% ══════════════════════════════════════════════════════════════
+\section{Introduction to Mobile Ad-Hoc Networks}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{What is a MANET?}
+
+A \textbf{Mobile Ad-Hoc Network (MANET)} is a self-configuring, infrastructure-less network of mobile devices connected wirelessly. Unlike traditional networks that rely on fixed infrastructure (routers, access points), MANETs are fully distributed: every node acts simultaneously as a host and a router, forwarding packets on behalf of other nodes.
+
+Key characteristics:
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Dynamic topology} — nodes move freely, links appear and disappear
+  \item \textbf{Multi-hop routing} — packets may traverse several intermediate nodes
+  \item \textbf{No central administration} — the network is self-organizing
+  \item \textbf{Resource constraints} — limited battery, bandwidth, and memory
+\end{itemize}
+
+\subsection{Applications}
+
+\begin{itemize}[leftmargin=1.5em]
+  \item Disaster recovery and emergency communications
+  \item Military battlefield networks
+  \item Vehicular communications (VANET)
+  \item Sensor networks (WSN / IoT)
+  \item Campus/conference networking
+\end{itemize}
+
+\subsection{Routing Protocols}
+
+The four major routing protocol categories studied in this lab are:
+
+\begin{table}[H]
+\centering
+\caption{MANET Routing Protocols}
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Protocol} & \textbf{Type} & \textbf{Key Characteristics} \\
+\midrule
+\protocol{AODV} \newline Ad-hoc On-Demand Distance Vector &
+  Reactive (on-demand) &
+  Routes are discovered only when needed. Low overhead in sparse networks. Uses sequence numbers to avoid loops. \\
+\midrule
+\protocol{DSDV} \newline Destination-Sequenced Distance Vector &
+  Proactive (table-driven) &
+  Each node maintains a full routing table. Consistent routes but high overhead in large networks. \\
+\midrule
+\protocol{DSR} \newline Dynamic Source Routing &
+  Reactive (source routing) &
+  Full path is embedded in the packet header. No routing table needed at intermediate nodes. Good for small networks. \\
+\midrule
+\protocol{OLSR} \newline Optimized Link State Routing &
+  Proactive &
+  Uses Multipoint Relays (MPR) to reduce flooding overhead. Better for larger, denser networks. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════
+\section{System Requirements}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Hardware Requirements}
+
+\begin{table}[H]
+\centering
+\caption{Minimum Hardware Requirements}
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Minimum / Recommended} \\
+\midrule
+CPU          & Quad-core 2.0 GHz / 8-core recommended \\
+RAM          & 8 GB minimum / 16 GB recommended \\
+Storage      & 20 GB free (SSD strongly recommended) \\
+Display      & 1280$\times$768 minimum / 1920$\times$1080 recommended \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Software Requirements}
+
+\begin{table}[H]
+\centering
+\caption{Software Stack}
+\begin{tabular}{lll}
+\toprule
+\textbf{Component}  & \textbf{Version}      & \textbf{Location} \\
+\midrule
+Windows             & 11 (Build 22000+)     & Host OS \\
+WSL2                & Latest                & Windows Feature \\
+Ubuntu              & 22.04 LTS             & WSL2 distro \\
+NS-3                & ns-3-dev (git)        & \cmd{\textasciitilde/ns-3-dev} in WSL \\
+NetAnim             & 3.109                 & \cmd{\textasciitilde/netanim} in WSL \\
+Python              & 3.10+                 & Windows \\
+customtkinter       & 5.x                   & Python (Windows) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{notebox}
+All NS-3 simulation commands run \textbf{inside WSL2 (Ubuntu)}. The Python GUI runs on \textbf{Windows} and communicates with WSL2 via subprocess calls. You do \textbf{not} need to install NS-3 on Windows.
+\end{notebox}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Step 1 — Installing WSL2 (Windows Subsystem for Linux)}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Enable WSL2}
+
+Open \textbf{PowerShell as Administrator} (right-click Start → Windows PowerShell (Admin)):
+
+\begin{lstlisting}[style=bash, caption={Enable WSL2 — PowerShell (Administrator)}]
+# Install WSL with Ubuntu (default distro)
+wsl --install
+
+# If WSL was already installed, set version to 2:
+wsl --set-default-version 2
+\end{lstlisting}
+
+Restart your computer when prompted.
+
+\subsection{Verify WSL2 Installation}
+
+After restarting, open PowerShell and verify:
+
+\begin{lstlisting}[style=bash, caption={Verify WSL2}]
+# Check installed distros and their WSL version
+wsl --list --verbose
+\end{lstlisting}
+
+Expected output:
+\begin{lstlisting}[style=output]
+  NAME      STATE           VERSION
+* Ubuntu    Running         2
+\end{lstlisting}
+
+\subsection{First-Time Ubuntu Setup}
+
+Launch Ubuntu from the Start menu. On first launch:
+\begin{enumerate}[leftmargin=1.5em]
+  \item Wait for Ubuntu to finish installing (takes 1--2 minutes)
+  \item Create a UNIX username and password when prompted
+  \item Update the package list:
+\end{enumerate}
+
+\begin{lstlisting}[style=bash, caption={Update Ubuntu packages}]
+sudo apt update && sudo apt upgrade -y
+\end{lstlisting}
+
+\begin{warnbox}
+If WSL2 is not available (older Windows 10 versions), your system may not support virtualization. Enable \textbf{Intel VT-x / AMD-V} in BIOS, then re-run the \cmd{wsl --install} command.
+\end{warnbox}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Step 2 — Installing NS-3}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Install Build Dependencies}
+
+Open your Ubuntu (WSL2) terminal and install all required packages:
+
+\begin{lstlisting}[style=bash, caption={Install NS-3 build dependencies (Ubuntu 22.04)}]
+sudo apt install -y \
+  g++ \
+  python3 \
+  python3-dev \
+  pkg-config \
+  sqlite3 \
+  libsqlite3-dev \
+  libxml2 \
+  libxml2-dev \
+  libboost-dev \
+  libgtk-3-dev \
+  libgsl-dev \
+  cmake \
+  ninja-build \
+  git \
+  curl \
+  unzip
+\end{lstlisting}
+
+\begin{tipbox}
+This single command installs all core dependencies. It may take 3--5 minutes on a first run.
+\end{tipbox}
+
+\subsection{Clone the NS-3 Repository}
+
+\begin{lstlisting}[style=bash, caption={Clone NS-3 development repository}]
+cd ~
+git clone https://gitlab.com/nsnam/ns-3-dev.git
+cd ns-3-dev
+\end{lstlisting}
+
+\subsection{Configure and Build NS-3}
+
+\begin{lstlisting}[style=bash, caption={Configure NS-3 build}]
+# Configure (optimized release build with examples and tests)
+./ns3 configure --enable-examples --enable-tests
+
+# Build (this takes 10-30 minutes depending on your CPU)
+./ns3 build
+\end{lstlisting}
+
+\begin{warnbox}
+The build process is CPU-intensive and may take up to 30 minutes on older hardware. Do \textbf{not} close the terminal during the build.
+\end{warnbox}
+
+\subsection{Verify the NS-3 Build}
+
+\begin{lstlisting}[style=bash, caption={Verify NS-3 installation}]
+./ns3 --version
+\end{lstlisting}
+
+Expected output:
+\begin{lstlisting}[style=output]
+ns-3.43-dev (git) built with CMake
+\end{lstlisting}
+
+Run a quick test to confirm everything works:
+
+\begin{lstlisting}[style=bash, caption={Run the hello-simulator example}]
+./ns3 run hello-simulator
+\end{lstlisting}
+
+Expected output:
+\begin{lstlisting}[style=output]
+Hello Simulator
+\end{lstlisting}
+
+\begin{tipbox}
+If you see \texttt{Hello Simulator}, NS-3 is correctly installed and working.
+\end{tipbox}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Step 3 — Installing NetAnim}
+% ══════════════════════════════════════════════════════════════
+
+NetAnim is the NS-3 animation tool that reads \file{.xml} trace files and renders a visual, frame-by-frame animation of your network simulation.
+
+\subsection{Install Qt5 Dependencies}
+
+NetAnim requires Qt5 for its graphical interface:
+
+\begin{lstlisting}[style=bash, caption={Install Qt5 for NetAnim}]
+sudo apt install -y \
+  qt5-qmake \
+  qtbase5-dev \
+  qtchooser \
+  libqt5widgets5
+\end{lstlisting}
+
+\subsection{Clone and Build NetAnim}
+
+\begin{lstlisting}[style=bash, caption={Clone and build NetAnim}]
+cd ~
+git clone https://gitlab.com/nsnam/netanim.git
+cd netanim
+
+# Generate Makefile from the Qt project
+qmake NetAnim.pro
+
+# Build
+make -j$(nproc)
+\end{lstlisting}
+
+\begin{notebox}
+\cmd{-j\$(nproc)} tells \cmd{make} to use all available CPU cores. This significantly speeds up compilation.
+\end{notebox}
+
+\subsection{Verify NetAnim}
+
+\begin{lstlisting}[style=bash, caption={Verify NetAnim executable}]
+ls -lh ~/netanim/build/netanim
+\end{lstlisting}
+
+You should see a file like:
+\begin{lstlisting}[style=output]
+-rwxr-xr-x 1 user user 8.5M May 20 12:34 /home/user/netanim/build/netanim
+\end{lstlisting}
+
+\subsection{Configure WSL2 for GUI Applications (NetAnim)}
+
+NetAnim has a graphical interface. To run GUI apps from WSL2 on Windows, you need to set up a display server.
+
+\subsubsection{Option A — Windows 11 (Built-in WSLg)}
+
+Windows 11 includes \textbf{WSLg} (WSL GUI support) by default. No extra steps are needed — simply run:
+
+\begin{lstlisting}[style=bash, caption={Launch NetAnim (Windows 11 with WSLg)}]
+~/netanim/build/netanim
+\end{lstlisting}
+
+\subsubsection{Option B — Windows 10 (VcXsrv)}
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item Download and install \textbf{VcXsrv} from \url{https://sourceforge.net/projects/vcxsrv/}
+  \item Launch XLaunch (VcXsrv), choose ``Multiple windows'', click Next until Finish
+  \item In Ubuntu WSL, add the display variable:
+\end{enumerate}
+
+\begin{lstlisting}[style=bash, caption={Set DISPLAY variable (Windows 10 / VcXsrv)}]
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0
+# Add this line to ~/.bashrc so it persists across sessions:
+echo 'export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '"'"'{print $2}'"'"'):0.0' >> ~/.bashrc
+source ~/.bashrc
+\end{lstlisting}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Step 4 — Setting Up the MANET Research Platform}
+% ══════════════════════════════════════════════════════════════
+
+The MANET Research Platform is a Python/CustomTkinter desktop application that provides a complete graphical interface for configuring, running, and analyzing NS-3 MANET simulations.
+
+\subsection{Clone the Repository}
+
+Open a \textbf{Windows} terminal (PowerShell or Command Prompt):
+
+\begin{lstlisting}[style=bash, caption={Clone the MANET Research Platform (Windows PowerShell)}]
+git clone https://github.com/neslang-05/manet-simulator.git
+cd manet-simulator
+\end{lstlisting}
+
+\subsection{Install Python Dependencies}
+
+\begin{lstlisting}[style=bash, caption={Install Python packages (Windows PowerShell)}]
+pip install customtkinter matplotlib pandas numpy Pillow
+\end{lstlisting}
+
+Or use the provided requirements file:
+
+\begin{lstlisting}[style=bash, caption={Install from requirements.txt}]
+pip install -r manet-platform/requirements.txt
+\end{lstlisting}
+
+\subsection{First-Time: Install the NS-3 Simulation File}
+
+The platform needs to copy its custom \file{manet-sim.cc} script into the NS-3 scratch directory.
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item Run the platform: \cmd{python manet-platform/main.py}
+  \item Click \textbf{Diagnostics} in the left sidebar
+  \item Click the \textbf{``Install \& Build manet-sim''} button
+  \item Wait for the build log to show \texttt{Build finished successfully}
+\end{enumerate}
+
+This operation:
+\begin{enumerate}[leftmargin=1.5em]
+  \item Copies \file{ns3/manet-sim.cc} → \cmd{\textasciitilde/ns-3-dev/scratch/manet-sim.cc} (in WSL)
+  \item Runs \cmd{./ns3 build} to compile the scratch file
+\end{enumerate}
+
+\subsection{Launch the Platform}
+
+\begin{lstlisting}[style=bash, caption={Launch MANET Research Platform}]
+python manet-platform/main.py
+\end{lstlisting}
+
+\begin{notebox}
+Always run \cmd{python main.py} from the \file{manet-platform/} directory (or from the project root as shown above). The app adds the correct path automatically.
+\end{notebox}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Step 5 — Running Your First Simulation}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{The Simulation Panel}
+
+On launch, the platform opens to the \textbf{Simulation} panel. This is where you configure all parameters before running.
+
+\subsubsection{Protocol Selection}
+
+Choose one of the four routing protocols:
+
+\begin{table}[H]
+\centering
+\caption{When to Use Each Protocol}
+\begin{tabular}{llp{7cm}}
+\toprule
+\textbf{Protocol} & \textbf{Best For} & \textbf{Scenario} \\
+\midrule
+AODV  & General use     & Medium-sized networks with moderate mobility \\
+DSDV  & Low mobility    & Stable networks where routes don't change often \\
+DSR   & Small networks  & Fewer than 20 nodes, low overhead critical \\
+OLSR  & Dense networks  & Large networks with frequent topology changes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Simulation Parameters}
+
+\begin{table}[H]
+\centering
+\caption{Configurable Simulation Parameters}
+\begin{tabular}{llll}
+\toprule
+\textbf{Parameter} & \textbf{Range} & \textbf{Default} & \textbf{Effect} \\
+\midrule
+Number of Nodes      & 5--100    & 20      & Network size \\
+Simulation Time      & 10--600 s & 60 s    & Total run duration \\
+Area Width           & 200--5000 m & 1000 m & Simulation field width \\
+Area Height          & 200--5000 m & 1000 m & Simulation field height \\
+Node Speed           & 1--50 m/s & 10 m/s  & Mobility speed \\
+Pause Time           & 0--30 s   & 2 s     & Pause between movements \\
+Battery Capacity     & 10--500 J & 100 J   & Energy budget per node \\
+TX Range             & 50--1000 m & 250 m  & Wireless transmission range \\
+Packet Size          & 64--4096 B & 512 B  & CBR packet payload \\
+Data Rate            & 512K--10M & 2 Mbps  & CBR traffic rate \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Using Presets}
+
+For common scenarios, use the built-in presets:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Small Network} — 10 nodes, 500×500 m, AODV (good for quick tests)
+  \item \textbf{Medium Network} — 30 nodes, 1500×1500 m, OLSR
+  \item \textbf{Large Network} — 50 nodes, 2000×2000 m, DSDV
+  \item \textbf{Energy Stress Test} — 40 nodes, low battery, AODV
+  \item \textbf{High Mobility} — 25 nodes, 30 m/s, DSR
+\end{itemize}
+
+\subsection{Running the Simulation}
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item Select your protocol and configure parameters
+  \item Click \textbf{``Run Simulation''}
+  \item The view switches to the \textbf{Console} panel showing live NS-3 output
+  \item On completion, NetAnim opens automatically with the animation file
+  \item Graphs and results are generated and appear in their respective panels
+\end{enumerate}
+
+\subsection{What the Simulation Generates}
+
+Each simulation run creates a timestamped folder in \file{outputs/}:
+
+\begin{lstlisting}[style=bash, caption={Generated output structure}]
+outputs/<timestamp>/
+  battery.csv          # Per-node energy over time
+  mobility.csv         # Node X,Y positions over time
+  throughput.csv       # PDR + throughput over time
+  flowstats.csv        # Per-flow FlowMonitor statistics
+  summary.csv          # Single-row aggregate summary
+  manet-animation.xml  # NetAnim animation trace
+  manet-*.pcap         # PCAP packet captures
+  graphs/
+    battery_over_time.png
+    pdr_over_time.png
+    throughput_over_time.png
+    node_density.png
+    area_coverage.png
+    energy_distribution.png
+    flow_delay.png
+    summary_dashboard.png
+\end{lstlisting}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Step 6 — Visualizing Simulations with NetAnim}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Automatic Launch}
+
+When a simulation completes, the platform \textbf{automatically launches NetAnim} and loads the animation file. You do not need to open it manually under normal operation.
+
+\subsection{Manual Launch}
+
+If you need to open an animation file manually:
+
+\begin{lstlisting}[style=bash, caption={Manually open NetAnim with an animation file}]
+~/netanim/build/netanim /path/to/manet-animation.xml
+\end{lstlisting}
+
+For Windows path translation (WSL path from a Windows path):
+\begin{lstlisting}[style=bash, caption={Path translation example}]
+# Windows path: C:\Users\user\manet-simulator\outputs\20240515_120000\manet-animation.xml
+# WSL equivalent:
+~/netanim/build/netanim /mnt/c/Users/user/manet-simulator/outputs/20240515_120000/manet-animation.xml
+\end{lstlisting}
+
+\subsection{NetAnim Interface Guide}
+
+\begin{table}[H]
+\centering
+\caption{NetAnim Controls}
+\begin{tabular}{ll}
+\toprule
+\textbf{Control}          & \textbf{Function} \\
+\midrule
+Play button               & Start the animation \\
+Speed slider              & Adjust playback speed (0.1$\times$ to 10$\times$) \\
+Mouse scroll              & Zoom in/out \\
+Click and drag            & Pan the view \\
+Node click                & Show node information \\
+Packet toggle             & Show/hide packet transmissions \\
+Wireless range            & Toggle range circles per node \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Interpreting the Animation}
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Node circles} — each represents a mobile node
+  \item \textbf{Animated arcs/arrows} — represent packet transmissions
+  \item \textbf{Node color changes} — energy depletion (yellow → orange → red → dead)
+  \item \textbf{Node movement} — tracks the random waypoint mobility model
+\end{itemize}
+
+\begin{tipbox}
+Use the \textbf{speed slider} set to 0.5$\times$ when analyzing dense simulations — it helps you observe individual packet hops clearly.
+\end{tipbox}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Step 7 — Analyzing Results}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{Results Panel}
+
+The \textbf{Results} panel displays aggregate metrics immediately after simulation:
+
+\begin{table}[H]
+\centering
+\caption{Key Performance Metrics}
+\begin{tabular}{lll}
+\toprule
+\textbf{Metric}       & \textbf{Description}                    & \textbf{Good Value} \\
+\midrule
+PDR (\%)              & Packet Delivery Ratio                   & $>80\%$ \\
+Throughput (kbps)     & Effective data rate                     & Protocol-dependent \\
+E2E Delay (ms)        & End-to-end average packet delay         & $<200$ ms \\
+Overhead Ratio        & Routing vs. data packets ratio          & $<0.5$ \\
+Energy Used (\%)      & Average battery consumption             & Scenario-dependent \\
+Packets Sent          & Total CBR packets injected              & --- \\
+Packets Received      & Total packets at destination            & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Graphs Panel}
+
+Eight auto-generated graphs are available:
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item \textbf{Battery Over Time} — tracks energy depletion per node across simulation time
+  \item \textbf{PDR Over Time} — Packet Delivery Ratio plotted over time intervals
+  \item \textbf{Throughput Over Time} — effective throughput at the application layer
+  \item \textbf{Node Density} — spatial distribution of nodes in the simulation area
+  \item \textbf{Area Coverage} — visualization of which areas nodes cover
+  \item \textbf{Energy Distribution} — histogram of final energy levels across all nodes
+  \item \textbf{Flow Delay} — per-flow end-to-end delay from FlowMonitor data
+  \item \textbf{Summary Dashboard} — all key metrics in a single overview figure
+\end{enumerate}
+
+\subsection{Comparison Panel}
+
+Run multiple experiments with different protocols, then use the \textbf{Comparison} panel to:
+\begin{itemize}[leftmargin=1.5em]
+  \item Select 2--4 experiments from history
+  \item View side-by-side bar charts of PDR, throughput, delay, and energy
+  \item Export comparison data as CSV
+\end{itemize}
+
+\subsection{History Panel}
+
+Every run is automatically saved. From the \textbf{History} panel you can:
+\begin{itemize}[leftmargin=1.5em]
+  \item Browse all past experiments with timestamps and parameters
+  \item Reload any past experiment's graphs and results
+  \item Re-run a past experiment with the same configuration
+
+
+\end{itemize}
+
+\subsection{Exporting Data}
+
+All CSVs and graph PNGs are stored in the timestamped output folder. To export for a report:
+
+\begin{lstlisting}[style=bash, caption={Find your output folder (PowerShell)}]
+ls manet-platform\outputs\
+\end{lstlisting}
+
+\begin{lstlisting}[style=bash, caption={Find your output folder (WSL)}]
+ls ~/manet-platform/outputs/
+\end{lstlisting}
+
+Copy the \file{graphs/} folder and the CSV files directly into your report.
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Step 8 — Running Simulations from the Command Line}
+% ══════════════════════════════════════════════════════════════
+
+Advanced users can run NS-3 simulations directly from WSL without the GUI:
+
+\subsection{AODV Simulation}
+
+\begin{lstlisting}[style=bash, caption={Run AODV simulation directly}]
+cd ~/ns-3-dev
+./ns3 run "scratch/manet-sim \
+  --protocol=AODV \
+  --nNodes=20 \
+  --simTime=60 \
+  --areaWidth=1000 \
+  --areaHeight=1000 \
+  --nodeSpeed=10 \
+  --pauseTime=2"
+\end{lstlisting}
+
+\subsection{DSDV Simulation}
+
+\begin{lstlisting}[style=bash, caption={Run DSDV simulation}]
+./ns3 run "scratch/manet-sim --protocol=DSDV --nNodes=30 --simTime=120"
+\end{lstlisting}
+
+\subsection{DSR Simulation}
+
+\begin{lstlisting}[style=bash, caption={Run DSR simulation}]
+./ns3 run "scratch/manet-sim --protocol=DSR --nNodes=15 --simTime=60"
+\end{lstlisting}
+
+\subsection{OLSR Simulation}
+
+\begin{lstlisting}[style=bash, caption={Run OLSR simulation}]
+./ns3 run "scratch/manet-sim --protocol=OLSR --nNodes=50 --simTime=180"
+\end{lstlisting}
+
+\subsection{Run with Shell Scripts (from the repo root)}
+
+The repository includes ready-made shell scripts:
+
+\begin{lstlisting}[style=bash, caption={Run pre-configured simulations from repo root}]
+# Run AODV simulation
+bash run_aodv.sh
+
+# Run DSDV simulation
+bash run_dsdv.sh
+
+# Run DSR simulation
+bash run_dsr.sh
+
+# Run OLSR simulation
+bash run_olsr.sh
+\end{lstlisting}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Troubleshooting}
+% ══════════════════════════════════════════════════════════════
+
+\subsection{WSL2 Issues}
+
+\begin{errorbox}
+\textbf{Error:} \texttt{WSL 2 requires an update to its kernel component}
+
+\textbf{Fix:} Download and install the WSL2 Linux kernel update package from:\\
+\url{https://aka.ms/wsl2kernel}
+\end{errorbox}
+
+\begin{errorbox}
+\textbf{Error:} \texttt{The WSL optional component is not enabled}
+
+\textbf{Fix (PowerShell Administrator):}
+\begin{lstlisting}[style=bash]
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+\end{lstlisting}
+Then restart Windows.
+\end{errorbox}
+
+\subsection{NS-3 Build Issues}
+
+\begin{errorbox}
+\textbf{Error:} \texttt{cmake: command not found}
+
+\textbf{Fix:}
+\begin{lstlisting}[style=bash]
+sudo apt install cmake ninja-build
+\end{lstlisting}
+\end{errorbox}
+
+\begin{errorbox}
+\textbf{Error:} Build fails with \texttt{undefined reference to...}
+
+\textbf{Fix:} Re-run configure before building:
+\begin{lstlisting}[style=bash]
+./ns3 clean
+./ns3 configure --enable-examples --enable-tests
+./ns3 build
+\end{lstlisting}
+\end{errorbox}
+
+\begin{errorbox}
+\textbf{Error:} \texttt{scratch/manet-sim not found}
+
+\textbf{Fix:} The simulation file was not installed. From the MANET Platform GUI, go to \textbf{Diagnostics} → click \textbf{``Install \& Build manet-sim''}.
+
+Or manually:
+\begin{lstlisting}[style=bash]
+# From WSL terminal
+cp /mnt/c/Users/<youruser>/manet-simulator/manet-platform/ns3/manet-sim.cc ~/ns-3-dev/scratch/
+cd ~/ns-3-dev && ./ns3 build
+\end{lstlisting}
+\end{errorbox}
+
+\subsection{NetAnim Issues}
+
+\begin{errorbox}
+\textbf{Error:} \texttt{qmake: command not found}
+
+\textbf{Fix:}
+\begin{lstlisting}[style=bash]
+sudo apt install qt5-qmake qtbase5-dev qtchooser
+\end{lstlisting}
+\end{errorbox}
+
+\begin{errorbox}
+\textbf{Error:} NetAnim window doesn't appear (black screen or no window)
+
+\textbf{Fix (Windows 10):} Make sure VcXsrv is running and DISPLAY variable is set:
+\begin{lstlisting}[style=bash]
+echo $DISPLAY   # Should show something like 172.x.x.x:0.0
+\end{lstlisting}
+If empty, re-set the DISPLAY variable (see Section~\ref{sec:vcxsrv}).
+\end{errorbox}
+
+\subsection{Python / Platform Issues}
+
+\begin{errorbox}
+\textbf{Error:} \texttt{ModuleNotFoundError: No module named 'customtkinter'}
+
+\textbf{Fix:}
+\begin{lstlisting}[style=bash]
+pip install customtkinter matplotlib pandas numpy Pillow
+\end{lstlisting}
+\end{errorbox}
+
+\begin{errorbox}
+\textbf{Error:} \texttt{[WSL] WSL is not available or not running}
+
+\textbf{Fix:}
+\begin{enumerate}
+  \item Open Start → search ``Ubuntu'' → launch it
+  \item In PowerShell: \cmd{wsl --list --verbose} to confirm it's Running
+  \item In PowerShell: \cmd{wsl -d Ubuntu} to start it if Stopped
+\end{enumerate}
+\end{errorbox}
+
+
+% ══════════════════════════════════════════════════════════════
+\appendix
+\section{NS-3 Command Reference}
+% ══════════════════════════════════════════════════════════════
+
+\begin{table}[H]
+\centering
+\caption{Useful NS-3 Commands}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Command} & \textbf{Description} \\
+\midrule
+\cmd{./ns3 configure} & Configure the NS-3 build system \\
+\cmd{./ns3 build}     & Build all NS-3 modules and scratch scripts \\
+\cmd{./ns3 clean}     & Remove all build artifacts \\
+\cmd{./ns3 --version} & Print NS-3 version \\
+\cmd{./ns3 run <script>}        & Run a named script (e.g., \texttt{scratch/manet-sim}) \\
+\cmd{./ns3 run "<script> --arg=val>"} & Run with arguments \\
+\cmd{./ns3 test}      & Run the NS-3 test suite \\
+\cmd{./ns3 shell}     & Open a shell with NS-3 environment variables set \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+% ══════════════════════════════════════════════════════════════
+\section{Glossary}
+% ══════════════════════════════════════════════════════════════
+
+\begin{description}[leftmargin=3em, style=nextline]
+  \item[\textbf{AODV}] Ad-hoc On-Demand Distance Vector — a reactive routing protocol for MANETs.
+  \item[\textbf{CBR}] Constant Bit Rate — a traffic model that sends packets at a fixed rate.
+  \item[\textbf{DSDV}] Destination-Sequenced Distance Vector — a proactive table-driven routing protocol.
+  \item[\textbf{DSR}] Dynamic Source Routing — a reactive source-routing protocol.
+  \item[\textbf{FlowMonitor}] NS-3 module that captures per-flow statistics (PDR, delay, jitter).
+  \item[\textbf{MANET}] Mobile Ad-Hoc Network — infrastructure-less wireless network.
+  \item[\textbf{MPR}] Multipoint Relay — nodes selected by OLSR to forward broadcast traffic.
+  \item[\textbf{NetAnim}] NS-3 Animation tool — renders animated topology visualizations.
+  \item[\textbf{NS-3}] Network Simulator 3 — a discrete-event network simulator.
+  \item[\textbf{OLSR}] Optimized Link State Routing — a proactive routing protocol using MPRs.
+  \item[\textbf{PCAP}] Packet Capture — a file format for storing captured network packets.
+  \item[\textbf{PDR}] Packet Delivery Ratio — fraction of sent packets successfully received.
+  \item[\textbf{Random Waypoint}] A mobility model where nodes choose random destinations and speeds.
+  \item[\textbf{RREQ}] Route Request — control packet broadcast by AODV/DSR to find a route.
+  \item[\textbf{RREP}] Route Reply — control packet sent back in response to a RREQ.
+  \item[\textbf{WSL2}] Windows Subsystem for Linux 2 — runs a full Linux kernel inside Windows.
+\end{description}
+
+\bigskip
+\hrule
+\bigskip
+\begin{center}
+  {\small Repository: \href{https://github.com/neslang-05/manet-simulator}{\texttt{https://github.com/neslang-05/manet-simulator}}}\\[0.3em]
+  {\small Issues and contributions welcome via GitHub Issues and Pull Requests.}
+\end{center}
+
+% ══════════════════════════════════════════════════════════════
+\end{document}
+% ══════════════════════════════════════════════════════════════

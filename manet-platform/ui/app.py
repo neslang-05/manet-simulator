@@ -1,38 +1,44 @@
 """
 ui/app.py — Main Application Window
 CustomTkinter-based MANET Research Platform GUI.
+Repository: https://github.com/neslang-05/manet-simulator
 """
 
 import customtkinter as ctk
 import threading
 import os
+import webbrowser
 from pathlib import Path
 from typing import Optional
 
 from ui.theme import COLORS, FONTS, SPACING, RADIUS, PROTOCOL_COLORS
-from ui.panels.simulation  import SimulationPanel
-from ui.panels.console     import ConsolePanel
-from ui.panels.results     import ResultsPanel
-from ui.panels.graphs      import GraphsPanel
-from ui.panels.history     import HistoryPanel
-from ui.panels.comparison  import ComparisonPanel
-from ui.panels.diagnostics import DiagnosticsPanel
+from ui.panels.simulation     import SimulationPanel
+from ui.panels.console        import ConsolePanel
+from ui.panels.results        import ResultsPanel
+from ui.panels.graphs         import GraphsPanel
+from ui.panels.history        import HistoryPanel
+from ui.panels.comparison     import ComparisonPanel
+from ui.panels.diagnostics    import DiagnosticsPanel
+from ui.panels.documentation  import DocumentationPanel
 
-from backend.sim_runner       import SimRunner, SimConfig
-from backend.wsl_bridge       import WSLBridge
+from backend.sim_runner         import SimRunner, SimConfig
+from backend.wsl_bridge         import WSLBridge
 from backend.experiment_manager import ExperimentManager
-from analysis.graph_generator import GraphGenerator
+from analysis.graph_generator   import GraphGenerator
+
+REPO_URL = "https://github.com/neslang-05/manet-simulator"
 
 
 # ── Sidebar navigation items ────────────────────────────────────────────────
 NAV_ITEMS = [
-    ("simulation",  "⚙",  "Simulation"),
-    ("console",     "▶",  "Console"),
-    ("results",     "📊",  "Results"),
-    ("graphs",      "📈",  "Graphs"),
-    ("history",     "🗂",  "History"),
-    ("comparison",  "⚖",  "Comparison"),
-    ("diagnostics", "🔧",  "Diagnostics"),
+    ("simulation",    "⚙",  "Simulation"),
+    ("console",       "▶",  "Console"),
+    ("results",       "📊",  "Results"),
+    ("graphs",        "📈",  "Graphs"),
+    ("history",       "🗂",  "History"),
+    ("comparison",    "⚖",  "Comparison"),
+    ("diagnostics",   "🔧",  "Diagnostics"),
+    ("documentation", "📖",  "Documentation"),
 ]
 
 
@@ -124,13 +130,27 @@ class ManetApp(ctk.CTk):
             btn.pack(fill="x", pady=1)
             self._nav_buttons[key] = btn
 
+        # Bottom: GitHub repo link
+        ctk.CTkButton(
+            self._sidebar,
+            text="⭐  GitHub Repository",
+            font=FONTS["small"],
+            fg_color="transparent",
+            hover_color=COLORS["bg_hover"],
+            text_color=COLORS["link"],
+            anchor="w",
+            height=28,
+            corner_radius=0,
+            command=lambda: webbrowser.open(REPO_URL)
+        ).pack(side="bottom", fill="x", padx=4)
+
         # Bottom: version
         ctk.CTkLabel(
             self._sidebar,
-            text="v1.0.0  |  NS-3 + NetAnim",
+            text="v1.1.0  |  NS-3 + NetAnim",
             font=FONTS["small"],
             text_color=COLORS["text_muted"]
-        ).pack(side="bottom", pady=12)
+        ).pack(side="bottom", pady=(8, 2))
 
         # WSL status dot
         self._wsl_dot = ctk.CTkLabel(
@@ -204,14 +224,18 @@ class ManetApp(ctk.CTk):
             self._content, console=self._console_panel
         )
 
+        # Documentation Panel
+        self._documentation_panel = DocumentationPanel(self._content)
+
         self._panel_widgets = {
-            "simulation":  self._sim_panel,
-            "console":     self._console_panel,
-            "results":     self._results_panel,
-            "graphs":      self._graphs_panel,
-            "history":     self._history_panel,
-            "comparison":  self._comparison_panel,
-            "diagnostics": self._diagnostics_panel,
+            "simulation":    self._sim_panel,
+            "console":       self._console_panel,
+            "results":       self._results_panel,
+            "graphs":        self._graphs_panel,
+            "history":       self._history_panel,
+            "comparison":    self._comparison_panel,
+            "diagnostics":   self._diagnostics_panel,
+            "documentation": self._documentation_panel,
         }
 
     # ── Navigation ────────────────────────────────────────────────────────────

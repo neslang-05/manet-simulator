@@ -37,6 +37,10 @@ COLORS = {
     # Borders
     "border":        "#DEE2E6",
     "border_active": "#00336688",
+
+    # Links
+    "link":          "#0066CC",
+    "link_hover":    "#004499",
 }
 
 FONTS = {

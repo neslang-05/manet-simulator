@@ -1,0 +1,138 @@
+# ============================================================
+# MANET Simulator — .gitignore
+# Repository: https://github.com/neslang-05/manet-simulator
+# ============================================================
+
+
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.env
+.venv
+env/
+venv/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+
+
+# ── NS-3 / Simulation Outputs ────────────────────────────────
+# Large animation XML files (use git-lfs if needed)
+*-animation.xml
+
+# Simulation run outputs (timestamped folders)
+manet-platform/outputs/*/
+outputs/*/
+
+# PCAP trace files (can be very large)
+*.pcap
+*.pcapng
+
+# NS-3 build artifacts (if ns-3 source is ever included)
+ns3/build/
+ns3/.lock-ns3*
+
+
+# ── Log Files ────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+
+
+# ── LaTeX Build Artifacts ────────────────────────────────────
+guide/*.aux
+guide/*.bbl
+guide/*.blg
+guide/*.fdb_latexmk
+guide/*.fls
+guide/*.lof
+guide/*.lot
+guide/*.out
+guide/*.synctex.gz
+guide/*.toc
+guide/*.log
+guide/_build/
+# Keep the source .tex and compiled .pdf (if you want to share it)
+# Uncomment below to also ignore the compiled PDF:
+# guide/*.pdf
+
+
+# ── Operating System ─────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+
+# ── IDE / Editors ─────────────────────────────────────────────
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains (PyCharm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+Session.vim
+.netrwhist
+tags
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+
+# ── Jupyter Notebooks ─────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+
+# ── Matplotlib / Analysis Cache ───────────────────────────────
+.matplotlib/
+
+
+# ── Secrets / Environment ─────────────────────────────────────
+.env
+.env.local
+.env.*.local
+secrets.json
