@@ -1,0 +1,14 @@
+{
+  "numNodes": 20,
+  "simTime": 60,
+  "areaWidth": 1000,
+  "areaHeight": 1000,
+  "speed": 10,
+  "pauseTime": 2,
+  "battery": 100,
+  "txRange": 250,
+  "packetSize": 512,
+  "dataRate": "2Mbps",
+  "protocol": "AODV",
+  "mobilityModel": "RandomWaypoint"
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "id": "20260521_155633",
+    "timestamp": "2026-05-21T15:57:39.102387",
+    "protocol": "OLSR",
+    "numNodes": 30,
+    "simTime": 120.0,
+    "success": true,
+    "config": {
+      "protocol": "OLSR",
+      "numNodes": 30,
+      "simTime": 120.0,
+      "areaWidth": 1500.0,
+      "areaHeight": 1500.0,
+      "speed": 15.0,
+      "pauseTime": 3.0,
+      "battery": 100.0,
+      "txRange": 300.0,
+      "packetSize": 512,
+      "dataRate": "2Mbps",
+      "mobilityModel": "RandomWaypoint"
+    },
+    "output_wsl": "/home/nesla/ns-3-dev/manet_outputs/20260521_155633",
+    "output_win": "\\\\wsl$\\U\u0000b\u0000u\u0000n\u0000t\u0000u\u0000\n\u0000\\home\\nesla\\ns-3-dev\\manet_outputs\\20260521_155633"
+  },
+  {
+    "id": "20260521_125727",
+    "timestamp": "2026-05-21T12:57:59.324278",
+    "protocol": "DSDV",
+    "numNodes": 20,
+    "simTime": 97.60606060606061,
+    "success": true,
+    "config": {
+      "protocol": "DSDV",
+      "numNodes": 20,
+      "simTime": 97.60606060606061,
+      "areaWidth": 1000.0,
+      "areaHeight": 1218.181818181818,
+      "speed": 10.0,
+      "pauseTime": 2.0,
+      "battery": 100.0,
+      "txRange": 250.0,
+      "packetSize": 512,
+      "dataRate": "2Mbps",
+      "mobilityModel": "RandomWaypoint"
+    },
+    "output_wsl": "/home/nesla/ns-3-dev/manet_outputs/20260521_125727",
+    "output_win": "\\\\wsl$\\U\u0000b\u0000u\u0000n\u0000t\u0000u\u0000\n\u0000\\home\\nesla\\ns-3-dev\\manet_outputs\\20260521_125727"
+  },
+  {
+    "id": "20260521_010538",
+    "timestamp": "2026-05-21T01:06:10.460977",
+    "protocol": "OLSR",
+    "numNodes": 30,
+    "simTime": 120.0,
+    "success": true,
+    "config": {
+      "protocol": "OLSR",
+      "numNodes": 30,
+      "simTime": 120.0,
+      "areaWidth": 1500.0,
+      "areaHeight": 1500.0,
+      "speed": 15.0,
+      "pauseTime": 3.0,
+      "battery": 100.0,
+      "txRange": 300.0,
+      "packetSize": 512,
+      "dataRate": "2Mbps",
+      "mobilityModel": "RandomWaypoint"
+    },
+    "output_wsl": "/home/nesla/ns-3-dev/manet_outputs/20260521_010538",
+    "output_win": "\\\\wsl$\\U\u0000b\u0000u\u0000n\u0000t\u0000u\u0000\n\u0000\\home\\nesla\\ns-3-dev\\manet_outputs\\20260521_010538"
+  },
+  {
+    "id": "20260521_010127",
+    "timestamp": "2026-05-21T01:02:30.148264",
+    "protocol": "DSDV",
+    "numNodes": 60,
+    "simTime": 60.0,
+    "success": true,
+    "config": {
+      "protocol": "DSDV",
+      "numNodes": 60,
+      "simTime": 60.0,
+      "areaWidth": 1000.0,
+      "areaHeight": 1000.0,
+      "speed": 10.0,
+      "pauseTime": 2.0,
+      "battery": 100.0,
+      "txRange": 250.0,
+      "packetSize": 512,
+      "dataRate": "2Mbps",
+      "mobilityModel": "RandomWaypoint"
+    },
+    "output_wsl": "/home/nesla/ns-3-dev/manet_outputs/20260521_010127",
+    "output_win": "\\\\wsl$\\U\u0000b\u0000u\u0000n\u0000t\u0000u\u0000\n\u0000\\home\\nesla\\ns-3-dev\\manet_outputs\\20260521_010127"
+  }
+]

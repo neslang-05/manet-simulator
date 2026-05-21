@@ -1,0 +1,67 @@
+{
+  "Small Network": {
+    "numNodes": 10,
+    "simTime": 30,
+    "areaWidth": 500,
+    "areaHeight": 500,
+    "speed": 5,
+    "pauseTime": 1,
+    "battery": 100,
+    "txRange": 200,
+    "packetSize": 256,
+    "dataRate": "1Mbps",
+    "protocol": "AODV"
+  },
+  "Medium Network": {
+    "numNodes": 30,
+    "simTime": 120,
+    "areaWidth": 1500,
+    "areaHeight": 1500,
+    "speed": 15,
+    "pauseTime": 3,
+    "battery": 100,
+    "txRange": 300,
+    "packetSize": 512,
+    "dataRate": "2Mbps",
+    "protocol": "OLSR"
+  },
+  "Large Network": {
+    "numNodes": 50,
+    "simTime": 200,
+    "areaWidth": 2000,
+    "areaHeight": 2000,
+    "speed": 20,
+    "pauseTime": 5,
+    "battery": 200,
+    "txRange": 350,
+    "packetSize": 1024,
+    "dataRate": "5Mbps",
+    "protocol": "DSDV"
+  },
+  "Energy Stress Test": {
+    "numNodes": 40,
+    "simTime": 300,
+    "areaWidth": 2000,
+    "areaHeight": 2000,
+    "speed": 25,
+    "pauseTime": 1,
+    "battery": 50,
+    "txRange": 250,
+    "packetSize": 1024,
+    "dataRate": "5Mbps",
+    "protocol": "AODV"
+  },
+  "High Mobility": {
+    "numNodes": 25,
+    "simTime": 100,
+    "areaWidth": 1000,
+    "areaHeight": 1000,
+    "speed": 30,
+    "pauseTime": 0.5,
+    "battery": 100,
+    "txRange": 200,
+    "packetSize": 512,
+    "dataRate": "2Mbps",
+    "protocol": "DSR"
+  }
+}
