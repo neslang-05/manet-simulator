@@ -22,6 +22,11 @@ if [ -f "$ANIM_FILE" ]; then
     cp "$ANIM_FILE" "$ORIGIN_DIR/"
 fi
 
+if [ -f "dsrtest.tr" ]; then
+    echo "Copying dsrtest.tr trace file back to your project folder..."
+    cp "dsrtest.tr" "$ORIGIN_DIR/"
+fi
+
 # Check if animation file exists
 if [ -f "$ANIM_FILE" ]; then
     echo "Opening NetAnim... (Close the NetAnim window to exit this script)"

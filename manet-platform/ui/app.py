@@ -47,7 +47,7 @@ class ManetApp(ctk.CTk):
         self.geometry("1400x900")
         self.minsize(1200, 750)
 
-        ctk.set_appearance_mode("dark")
+        ctk.set_appearance_mode("light")
         ctk.set_default_color_theme("blue")
 
         self.configure(fg_color=COLORS["bg_primary"])
@@ -85,13 +85,13 @@ class ManetApp(ctk.CTk):
         self._sidebar.grid_rowconfigure(len(NAV_ITEMS) + 2, weight=1)
 
         # Logo area
-        logo_frame = ctk.CTkFrame(self._sidebar, fg_color="transparent", height=72)
+        logo_frame = ctk.CTkFrame(self._sidebar, fg_color="transparent", height=100)
         logo_frame.pack(fill="x")
         logo_frame.pack_propagate(False)
 
         ctk.CTkLabel(
             logo_frame, text="MANET\nPlatform",
-            font=("Segoe UI", 17, "bold"),
+            font=("Arial", 18, "bold"),
             text_color=COLORS["accent"],
             justify="left"
         ).place(x=20, y=15)
@@ -100,7 +100,7 @@ class ManetApp(ctk.CTk):
             logo_frame, text="Research Suite",
             font=FONTS["small"],
             text_color=COLORS["text_muted"]
-        ).place(x=20, y=50)
+        ).place(x=20, y=65)
 
         # Divider
         ctk.CTkFrame(self._sidebar, height=1,
@@ -376,5 +376,13 @@ class ManetApp(ctk.CTk):
                         text="⬤  WSL: Unavailable",
                         text_color=COLORS["danger"]
                     )
+                
+                # Auto-load latest experiment if available
+                exps = self._history_panel._manager.get_all()
+                if exps:
+                    latest = exps[0]
+                    self._on_load_results(latest.get("output_win", ""), latest.get("protocol", "?"))
+                    self.navigate_to("simulation") # Stay on simulation tab on launch
+
             self.after(0, _update)
         threading.Thread(target=_check, daemon=True).start()

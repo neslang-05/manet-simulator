@@ -260,9 +260,9 @@ class SimulationPanel(ctk.CTkScrollableFrame):
             btn_card, text="▶  Run Simulation",
             fg_color=COLORS["accent"],
             hover_color=COLORS["accent_dim"],
-            text_color="#000000",
+            text_color="#FFFFFF",
             corner_radius=RADIUS["sm"],
-            font=("Segoe UI", 13, "bold"),
+            font=("Arial", 16, "bold"),
             height=44, width=200,
             command=self._do_run
         )

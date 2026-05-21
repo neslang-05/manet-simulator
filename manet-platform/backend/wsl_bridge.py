@@ -154,9 +154,9 @@ class WSLBridge:
     def wsl_path_to_windows(self, wsl_path: str) -> str:
         """Translate WSL path to UNC Windows path."""
         # e.g. /home/user/... -> \\wsl$\Ubuntu\home\user\...
-        ok, distro = self.run_sync("wsl.exe -l -q 2>/dev/null | head -1 || echo Ubuntu")
-        distro = distro.strip() or "Ubuntu"
-        clean = wsl_path.lstrip('/')
+        ok, distro = self.run_sync("echo $WSL_DISTRO_NAME")
+        distro = distro.replace('\x00', '').strip() or "Ubuntu"
+        clean = wsl_path.replace('\x00', '').lstrip('/')
         win_sep = '\\'
         clean_win = clean.replace('/', win_sep)
         return f"\\\\wsl$\\{distro}\\{clean_win}"

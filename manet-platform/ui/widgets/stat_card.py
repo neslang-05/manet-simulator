@@ -43,7 +43,7 @@ class StatCard(ctk.CTkFrame):
 
         self._value_lbl = ctk.CTkLabel(
             val_row, text=value,
-            font=("Segoe UI", 24, "bold"),
+            font=("Arial", 28, "bold"),
             text_color=COLORS["text_primary"],
             anchor="w"
         )

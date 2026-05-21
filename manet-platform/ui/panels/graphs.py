@@ -97,7 +97,7 @@ class GraphsPanel(ctk.CTkFrame):
 
         self._img_label = ctk.CTkLabel(
             self._img_frame,
-            text="No graph available.\nRun a simulation first.",
+            text="No graph available.\nRun a new simulation, or \nload a previous one from the History tab.",
             font=FONTS["body"], text_color=COLORS["text_muted"]
         )
         self._img_label.grid(row=0, column=0, sticky="nsew")

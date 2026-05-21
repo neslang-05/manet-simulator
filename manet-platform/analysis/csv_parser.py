@@ -111,7 +111,7 @@ class CSVParser:
             grid_size = 10
             x_bins = pd.cut(mobility_df["X"], bins=grid_size)
             y_bins = pd.cut(mobility_df["Y"], bins=grid_size)
-            cells = mobility_df.groupby([x_bins, y_bins]).size()
+            cells = mobility_df.groupby([x_bins, y_bins], observed=False).size()
             visited = (cells > 0).sum()
             total = grid_size * grid_size
             return round(100.0 * visited / total, 1)

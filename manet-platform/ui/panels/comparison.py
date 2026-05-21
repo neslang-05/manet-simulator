@@ -12,7 +12,7 @@ from analysis.graph_generator import ComparisonGraphGenerator
 from ui.panels.graphs import GraphsPanel
 
 
-class ComparisonPanel(ctk.CTkFrame):
+class ComparisonPanel(ctk.CTkScrollableFrame):
     """Side-by-side protocol comparison panel."""
 
     def __init__(self, parent, **kwargs):
@@ -63,7 +63,7 @@ class ComparisonPanel(ctk.CTkFrame):
             btn_row, text="⚖ Run Comparison",
             height=32,
             fg_color=COLORS["accent"], hover_color=COLORS["accent_dim"],
-            text_color="#000", corner_radius=RADIUS["sm"],
+            text_color="#FFFFFF", corner_radius=RADIUS["sm"],
             font=FONTS["subhead"],
             command=self._run_comparison
         ).pack(side="left")
@@ -86,8 +86,9 @@ class ComparisonPanel(ctk.CTkFrame):
         ).pack(pady=8)
 
         # Comparison graphs embedded
-        self._graphs_area = ctk.CTkFrame(self, fg_color="transparent")
+        self._graphs_area = ctk.CTkFrame(self, fg_color="transparent", height=700)
         self._graphs_area.pack(fill="both", expand=True, padx=20, pady=(0, 20))
+        self._graphs_area.pack_propagate(False)
 
         self._refresh_experiments()
 

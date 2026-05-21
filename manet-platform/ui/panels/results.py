@@ -160,6 +160,16 @@ class ResultsPanel(ctk.CTkScrollableFrame):
                    padx=4, pady=8, sticky="w")
             return
 
+        total_flows = len(df)
+        if total_flows > 50:
+            ctk.CTkLabel(
+                self._table_frame, text=f"Showing exactly 50 of {total_flows} flows (UI performance limit).",
+                font=FONTS["body"], text_color=COLORS["warning"]
+            ).grid(row=self._table_start_row, column=0, columnspan=8,
+                   padx=4, pady=8, sticky="w")
+            df = df.head(50)
+            self._table_start_row += 1
+
         for i, (_, row) in enumerate(df.iterrows()):
             bg = COLORS["bg_primary"] if i % 2 == 0 else COLORS["bg_card"]
             vals = [

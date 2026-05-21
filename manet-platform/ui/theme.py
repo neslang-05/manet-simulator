@@ -5,48 +5,48 @@ ui/theme.py — Centralized design tokens for the MANET platform UI.
 # ── Color Tokens ─────────────────────────────────────────────────────────────
 COLORS = {
     # Backgrounds
-    "bg_primary":    "#0B0D14",
-    "bg_secondary":  "#111320",
-    "bg_card":       "#161926",
-    "bg_sidebar":    "#0D0F1A",
-    "bg_input":      "#1C1F2E",
-    "bg_hover":      "#1E2235",
-    "bg_active":     "#252A3D",
+    "bg_primary":    "#F5F7FA",
+    "bg_secondary":  "#E9ECEF",
+    "bg_card":       "#FFFFFF",
+    "bg_sidebar":    "#E2E6EA",
+    "bg_input":      "#FFFFFF",
+    "bg_hover":      "#DDE2E5",
+    "bg_active":     "#CED4DA",
 
-    # Accents
-    "accent":        "#00C6FF",
-    "accent_dim":    "#0099CC",
-    "accent_glow":   "#00C6FF22",
-    "success":       "#51CF66",
-    "warning":       "#FFD43B",
-    "danger":        "#FF6B6B",
-    "purple":        "#9775FA",
+    # Accents (Professional deep blue)
+    "accent":        "#003366",
+    "accent_dim":    "#004488",
+    "accent_glow":   "#00336622",
+    "success":       "#28A745",
+    "warning":       "#FFC107",
+    "danger":        "#DC3545",
+    "purple":        "#6F42C1",
 
-    # Protocol colors
-    "proto_aodv":    "#00C6FF",
-    "proto_dsdv":    "#FF6B6B",
-    "proto_dsr":     "#51CF66",
-    "proto_olsr":    "#FFD43B",
+    # Protocol colors (made dark enough to read on light backgrounds)
+    "proto_aodv":    "#004085",
+    "proto_dsdv":    "#C82333",
+    "proto_dsr":     "#218838",
+    "proto_olsr":    "#D39E00",
 
     # Text
-    "text_primary":  "#E8EAF0",
-    "text_secondary":"#8B91A8",
-    "text_muted":    "#4A4F66",
-    "text_accent":   "#00C6FF",
+    "text_primary":  "#212529",
+    "text_secondary":"#495057",
+    "text_muted":    "#6C757D",
+    "text_accent":   "#003366",
 
     # Borders
-    "border":        "#222535",
-    "border_active": "#00C6FF44",
+    "border":        "#DEE2E6",
+    "border_active": "#00336688",
 }
 
 FONTS = {
-    "display": ("Segoe UI", 22, "bold"),
-    "heading": ("Segoe UI", 15, "bold"),
-    "subhead": ("Segoe UI", 12, "bold"),
-    "body":    ("Segoe UI", 11),
-    "small":   ("Segoe UI", 10),
-    "mono":    ("Consolas", 10),
-    "mono_lg": ("Consolas", 11),
+    "display": ("Arial", 28, "bold"),
+    "heading": ("Arial", 20, "bold"),
+    "subhead": ("Arial", 16, "bold"),
+    "body":    ("Arial", 14),
+    "small":   ("Arial", 12),
+    "mono":    ("Consolas", 12),
+    "mono_lg": ("Consolas", 14),
 }
 
 SPACING = {

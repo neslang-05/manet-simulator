@@ -18,18 +18,18 @@ from analysis.csv_parser import CSVParser
 
 # ── Color palette ──────────────────────────────────────────────────────────
 PROTOCOL_COLORS = {
-    "AODV": "#00C6FF",
-    "DSDV": "#FF6B6B",
-    "DSR":  "#51CF66",
-    "OLSR": "#FFD43B",
+    "AODV": "#004085",
+    "DSDV": "#C82333",
+    "DSR":  "#218838",
+    "OLSR": "#D39E00",
 }
 
 STYLE = {
-    "bg":      "#0F1117",
-    "fg":      "#E8EAF0",
-    "grid":    "#2A2D3A",
-    "accent":  "#00C6FF",
-    "spine":   "#2A2D3A",
+    "bg":      "#F5F7FA",
+    "fg":      "#212529",
+    "grid":    "#DEE2E6",
+    "accent":  "#003366",
+    "spine":   "#DEE2E6",
 }
 
 
