@@ -130,16 +130,26 @@ class WSLBridge:
     # ── File operations ────────────────────────────────────────────────
     def install_sim(self, cc_path_windows: str, on_output: Callable[[str], None],
                     on_done: Callable[[int], None]) -> None:
-        """Copy manet-sim.cc into WSL scratch and build it."""
-        # Convert Windows path to WSL path
-        wsl_path = self._win_to_wsl(cc_path_windows)
+        """Run install.sh to copy all simulation files into WSL scratch and build them.
+
+        install.sh copies:
+          - manet-sim.cc    (unified GUI simulation)
+          - lab-aodv.cc     (AODV example)
+          - dsdv-manet.cc   (DSDV example)
+          - lab-dsr.cc      (DSR  example)
+          - lab-olsr.cc     (OLSR example)
+          - CMakeLists.txt  (links ns3-netanim for all targets)
+        """
+        # Derive the ns3/ folder from the cc_path_windows (e.g. .../ns3/manet-sim.cc)
+        ns3_folder_win = str(Path(cc_path_windows).parent)
+        ns3_folder_wsl = self._win_to_wsl(ns3_folder_win)
+        install_script = f"{ns3_folder_wsl}/install.sh"
+
         cmd = (
-            f"mkdir -p {self.SCRATCH} && "
-            f"cp '{wsl_path}' {self.SCRATCH}/manet-sim.cc && "
-            f"echo '[WSL] Copied manet-sim.cc' && "
-            f"cd {self.NS3_DIR} && "
-            f"./ns3 build scratch/manet-sim 2>&1"
+            f"chmod +x '{install_script}' && "
+            f"bash '{install_script}' 2>&1"
         )
+        on_output("[WSL] Running install.sh — copying all simulation files and building...")
         self.run_async(cmd, on_output, on_done)
 
     def _win_to_wsl(self, win_path: str) -> str:
