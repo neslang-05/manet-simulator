@@ -4,15 +4,18 @@ ui/panels/diagnostics.py — WSL Diagnostics Panel
 
 import customtkinter as ctk
 import threading
+from tkinter import messagebox
 from ui.theme import COLORS, FONTS, RADIUS
 from backend.wsl_bridge import WSLBridge
+from backend.paths import get_resource_path
 
 
 DIAG_ITEMS = [
-    ("wsl",       "WSL 2 Connected"),
-    ("ns3",       "NS-3 Available"),
-    ("netanim",   "NetAnim Available"),
-    ("sim",       "manet-sim.cc Installed"),
+    ("wsl",         "WSL 2 Connected"),
+    ("build_tools", "WSL Build Tools"),
+    ("ns3",         "NS-3 Available"),
+    ("netanim",     "NetAnim Available"),
+    ("sim",         "manet-sim.cc Installed"),
 ]
 
 
@@ -99,7 +102,7 @@ class DiagnosticsPanel(ctk.CTkFrame):
         ctk.CTkButton(
             btn_row, text="📦  Install & Build manet-sim",
             fg_color=COLORS["accent"], hover_color=COLORS["accent_dim"],
-            text_color="#000", corner_radius=RADIUS["sm"],
+            text_color="#FFFFFF", corner_radius=RADIUS["sm"],
             font=FONTS["subhead"], height=38,
             command=self._do_install
         ).pack(side="left", padx=(0, 10))
@@ -149,6 +152,10 @@ class DiagnosticsPanel(ctk.CTkFrame):
             ok, msg = self._bridge.check_wsl()
             self.after(0, lambda: self._set_status("wsl", ok, msg))
 
+            ok, missing = self._bridge.check_build_tools()
+            msg = "All build tools found" if ok else f"Missing: {', '.join(missing)}"
+            self.after(0, lambda: self._set_status("build_tools", ok, msg))
+
             ok, msg = self._bridge.check_ns3()
             self.after(0, lambda: self._set_status("ns3", ok, msg))
 
@@ -160,21 +167,163 @@ class DiagnosticsPanel(ctk.CTkFrame):
 
         threading.Thread(target=_worker, daemon=True).start()
 
-    def _do_install(self):
-        import os
-        from pathlib import Path
-        cc_path = str(Path(__file__).parent.parent.parent / "ns3" / "manet-sim.cc")
-        self._append_log("Starting install...")
+    def _prompt_user(self, title: str, message: str) -> bool:
+        """Show a confirmation dialog on the main thread and block the background thread until answered."""
+        event = threading.Event()
+        result = [False]
+
+        def ask():
+            res = messagebox.askyesno(title, message)
+            result[0] = res
+            event.set()
+
+        self.after(0, ask)
+        event.wait()
+        return result[0]
+
+    def _run_async_wsl_step(self, method_name: str, *args) -> bool:
+        """Run an async WSL bridge installation method and block until finished, streaming output to log."""
+        event = threading.Event()
+        success = [False]
 
         def on_out(line):
             self.after(0, lambda: self._append_log(line))
 
         def on_done(rc):
-            msg = "Install complete!" if rc == 0 else f"Install failed (code {rc})"
-            self.after(0, lambda: self._append_log(msg))
-            self.after(0, self.run_diagnostics)
+            success[0] = (rc == 0)
+            event.set()
 
-        self._bridge.install_sim(cc_path, on_out, on_done)
+        # Retrieve and call the method from the bridge
+        method = getattr(self._bridge, method_name)
+        
+        # Invoke the bridge method.
+        self.after(0, lambda: method(*args, on_out, on_done))
+        
+        event.wait()
+        return success[0]
+
+    def _finish_wizard(self, success: bool):
+        self._installing = False
+        if success:
+            self.after(0, lambda: messagebox.showinfo("Success", "All dependencies, files, and simulation binaries have been successfully set up! You are ready to run simulations."))
+        else:
+            self.after(0, lambda: messagebox.showwarning("Incomplete", "The setup wizard did not complete successfully. Please review the log for errors."))
+        self.after(0, self.run_diagnostics)
+
+    def _do_install(self):
+        import os
+        from pathlib import Path
+        
+        # Prevent double-clicking/running simultaneously
+        if getattr(self, "_installing", False):
+            messagebox.showinfo("Installation in Progress", "An installation process is already running. Please check the log below.")
+            return
+        
+        self._installing = True
+        self._log.configure(state="normal")
+        self._log.delete("1.0", "end")
+        self._log.configure(state="disabled")
+        
+        self._append_log("=== Starting Automated Dependency Setup Wizard ===")
+        
+        def run_wizard():
+            # Step 1: Check WSL
+            self._append_log("[Wizard] Checking WSL connectivity...")
+            ok, msg = self._bridge.check_wsl()
+            if not ok:
+                self.after(0, lambda: messagebox.showerror("WSL Missing", f"WSL 2 is not connected or not available.\nError: {msg}\n\nPlease install WSL2 and Ubuntu manually."))
+                self._finish_wizard(False)
+                return
+            self._append_log("[Wizard] WSL is available.")
+
+            # Step 2: Check Build Tools
+            self._append_log("[Wizard] Checking WSL build tools (g++, cmake, ninja, git, qmake)...")
+            ok, missing = self._bridge.check_build_tools()
+            if not ok:
+                self._append_log(f"[Wizard] Missing build tools: {', '.join(missing)}")
+                response = self._prompt_user(
+                    "Install Build Tools",
+                    f"The following WSL packages/build tools are missing:\n{', '.join(missing)}\n\n"
+                    f"Would you like to install them automatically now?\n"
+                    f"(Requires internet access and root privileges via 'wsl -u root')"
+                )
+                if not response:
+                    self._append_log("[Wizard] User declined build tools installation. Aborting.")
+                    self._finish_wizard(False)
+                    return
+                
+                self._append_log("[Wizard] Installing build tools and library dependencies...")
+                success = self._run_async_wsl_step("install_wsl_dependencies")
+                if not success:
+                    self._append_log("[Wizard] Build tools installation failed. Aborting.")
+                    self._finish_wizard(False)
+                    return
+                self._append_log("[Wizard] Build tools and dependencies installed successfully.")
+            else:
+                self._append_log("[Wizard] All required build tools are already installed.")
+
+            # Step 3: Check NS-3
+            self._append_log("[Wizard] Checking NS-3 installation...")
+            ok, _ = self._bridge.check_ns3()
+            if not ok:
+                response = self._prompt_user(
+                    "Install NS-3",
+                    "NS-3 is not installed at ~/ns-3-dev inside WSL.\n\n"
+                    "Would you like the wizard to clone and compile NS-3 now?\n"
+                    "(Warning: Building NS-3 takes 15-40 minutes depending on your CPU)"
+                )
+                if not response:
+                    self._append_log("[Wizard] User declined NS-3 installation. Aborting.")
+                    self._finish_wizard(False)
+                    return
+                
+                self._append_log("[Wizard] Cloning and building NS-3 (this will take a while)...")
+                success = self._run_async_wsl_step("install_ns3")
+                if not success:
+                    self._append_log("[Wizard] NS-3 compilation failed. Aborting.")
+                    self._finish_wizard(False)
+                    return
+                self._append_log("[Wizard] NS-3 installed successfully.")
+            else:
+                self._append_log("[Wizard] NS-3 is already installed.")
+
+            # Step 4: Check NetAnim
+            self._append_log("[Wizard] Checking NetAnim installation...")
+            ok, _ = self._bridge.check_netanim()
+            if not ok:
+                response = self._prompt_user(
+                    "Install NetAnim",
+                    "NetAnim is not installed at ~/netanim/build/netanim inside WSL.\n\n"
+                    "Would you like the wizard to clone and compile NetAnim now?"
+                )
+                if not response:
+                    self._append_log("[Wizard] User declined NetAnim installation. Aborting.")
+                    self._finish_wizard(False)
+                    return
+                
+                self._append_log("[Wizard] Cloning and building NetAnim...")
+                success = self._run_async_wsl_step("install_netanim")
+                if not success:
+                    self._append_log("[Wizard] NetAnim compilation failed. Aborting.")
+                    self._finish_wizard(False)
+                    return
+                self._append_log("[Wizard] NetAnim installed successfully.")
+            else:
+                self._append_log("[Wizard] NetAnim is already installed.")
+
+            # Step 5: Install/compile simulation scratch files
+            self._append_log("[Wizard] Copying simulation files into scratch and compiling targets...")
+            cc_path = str(get_resource_path("ns3", "manet-sim.cc"))
+            success = self._run_async_wsl_step("install_sim", cc_path)
+            if not success:
+                self._append_log("[Wizard] Compilation of simulation files failed. Aborting.")
+                self._finish_wizard(False)
+                return
+            
+            self._append_log("[Wizard] === Setup completed successfully! ===")
+            self._finish_wizard(True)
+
+        threading.Thread(target=run_wizard, daemon=True).start()
 
     def _show_ns3_version(self):
         def _worker():

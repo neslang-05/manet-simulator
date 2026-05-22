@@ -33,10 +33,28 @@ if missing:
     print(f"[FIX]   Run: pip install {' '.join(missing)}")
     sys.exit(1)
 
-# ── Ensure output directories exist ──────────────────────────────────────────
-from pathlib import Path
+# ── Ensured output directories exist ──────────────────────────────────────────
+from backend.paths import get_data_path, get_resource_path
 for d in ["outputs/history", "logs", "assets"]:
-    Path(ROOT, d).mkdir(parents=True, exist_ok=True)
+    get_data_path(d).mkdir(parents=True, exist_ok=True)
+
+# ── Bundle Verification Mode (for automated testing) ───────────────────────
+if "--check-bundle" in sys.argv:
+    is_frozen = getattr(sys, "frozen", False)
+    presets_path = get_resource_path("configs", "presets.json")
+    sim_cpp_path = get_resource_path("ns3", "manet-sim.cc")
+    
+    print("=== Bundle Verification ===")
+    print(f"sys.frozen: {is_frozen}")
+    print(f"Presets path: {presets_path} (exists: {presets_path.exists()})")
+    print(f"Sim C++ path: {sim_cpp_path} (exists: {sim_cpp_path.exists()})")
+    
+    if presets_path.exists() and sim_cpp_path.exists():
+        print("BUNDLE_VERIFICATION: SUCCESS")
+        sys.exit(0)
+    else:
+        print("BUNDLE_VERIFICATION: FAILED")
+        sys.exit(1)
 
 # ── Launch GUI ────────────────────────────────────────────────────────────────
 from ui.app import ManetApp
@@ -44,3 +62,4 @@ from ui.app import ManetApp
 if __name__ == "__main__":
     app = ManetApp()
     app.mainloop()
+

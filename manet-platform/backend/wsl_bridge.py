@@ -38,6 +38,18 @@ class WSLBridge:
         except Exception as e:
             return False, str(e)
 
+    def check_build_tools(self) -> tuple[bool, list[str]]:
+        """Check if required build tools (g++, cmake, ninja, git, qmake) are installed in WSL."""
+        missing = []
+        for cmd in ["g++", "cmake", "ninja", "git"]:
+            ok, _ = self.run_sync(f"which {cmd}")
+            if not ok:
+                missing.append(cmd)
+        ok, _ = self.run_sync("which qmake || which qmake-qt5")
+        if not ok:
+            missing.append("qmake (Qt5)")
+        return len(missing) == 0, missing
+
     def check_ns3(self) -> tuple[bool, str]:
         """Check if ns-3-dev exists inside WSL."""
         ok, out = self.run_sync(f"test -d {self.NS3_DIR} && echo OK || echo NOTFOUND")
@@ -118,6 +130,42 @@ class WSLBridge:
         t = threading.Thread(target=_worker, daemon=True)
         t.start()
 
+    def run_async_root(
+        self,
+        wsl_cmd: str,
+        on_output: Callable[[str], None],
+        on_done: Callable[[int], None]
+    ) -> None:
+        """Run a WSL command asynchronously as root (passwordless via 'wsl -u root')."""
+        self._cancel_flag.clear()
+
+        def _worker():
+            try:
+                self._process = subprocess.Popen(
+                    ["wsl", "-u", "root", "bash", "-c", wsl_cmd],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1
+                )
+                for line in self._process.stdout:
+                    if self._cancel_flag.is_set():
+                        self._process.terminate()
+                        on_output("[CANCELLED] Command cancelled by user.")
+                        on_done(-1)
+                        return
+                    on_output(line.rstrip())
+                self._process.wait()
+                on_done(self._process.returncode)
+            except Exception as e:
+                on_output(f"[ERROR] {e}")
+                on_done(-1)
+            finally:
+                self._process = None
+
+        t = threading.Thread(target=_worker, daemon=True)
+        t.start()
+
     def cancel(self):
         """Cancel the currently running simulation."""
         self._cancel_flag.set()
@@ -150,6 +198,57 @@ class WSLBridge:
             f"bash '{install_script}' 2>&1"
         )
         on_output("[WSL] Running install.sh — copying all simulation files and building...")
+        self.run_async(cmd, on_output, on_done)
+
+    def install_wsl_dependencies(
+        self,
+        on_output: Callable[[str], None],
+        on_done: Callable[[int], None]
+    ) -> None:
+        """Install required WSL compiler and library dependencies as root."""
+        # Install build dependencies required for NS-3 and NetAnim.
+        # This handles both Ubuntu 20.04 and 22.04 by installing qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libqt5svg5-dev
+        packages = (
+            "g++ python3 python3-pip cmake ninja-build git "
+            "libsqlite3-dev libxml2-dev libgtk-3-dev "
+            "libboost-all-dev mercurial gsl-bin libgsl-dev "
+            "qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libqt5svg5-dev"
+        )
+        cmd = f"apt-get update && apt-get install -y {packages} 2>&1"
+        self.run_async_root(cmd, on_output, on_done)
+
+    def install_ns3(
+        self,
+        on_output: Callable[[str], None],
+        on_done: Callable[[int], None]
+    ) -> None:
+        """Clone and build NS-3 in WSL."""
+        cmd = (
+            f"cd ~ && "
+            f"if [ ! -d '{self.NS3_DIR}' ]; then "
+            f"  git clone https://gitlab.com/nsnam/ns-3-dev.git {self.NS3_DIR} 2>&1; "
+            f"fi && "
+            f"cd {self.NS3_DIR} && "
+            f"./ns3 configure --enable-examples --enable-tests 2>&1 && "
+            f"./ns3 build 2>&1"
+        )
+        self.run_async(cmd, on_output, on_done)
+
+    def install_netanim(
+        self,
+        on_output: Callable[[str], None],
+        on_done: Callable[[int], None]
+    ) -> None:
+        """Clone and build NetAnim in WSL."""
+        cmd = (
+            f"cd ~ && "
+            f"if [ ! -d '~/netanim' ]; then "
+            f"  git clone https://gitlab.com/nsnam/netanim.git ~/netanim 2>&1; "
+            f"fi && "
+            f"cd ~/netanim && "
+            f"qmake NetAnim.pro 2>&1 && "
+            f"make -j$(nproc) 2>&1"
+        )
         self.run_async(cmd, on_output, on_done)
 
     def _win_to_wsl(self, win_path: str) -> str:

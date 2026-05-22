@@ -49,7 +49,7 @@ class HistoryPanel(ctk.CTkFrame):
             action_bar, text="📊 View Results",
             state="disabled", height=32,
             fg_color=COLORS["accent"], hover_color=COLORS["accent_dim"],
-            text_color="#000", corner_radius=RADIUS["sm"],
+            text_color="#FFFFFF", corner_radius=RADIUS["sm"],
             font=FONTS["small"],
             command=self._view_selected
         )

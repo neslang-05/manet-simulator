@@ -8,9 +8,11 @@ from pathlib import Path
 from datetime import datetime
 
 
+from backend.paths import get_data_path
+
 def setup_logger(name: str = "manet_platform") -> logging.Logger:
     """Set up and return a configured logger."""
-    log_dir = Path(__file__).parent.parent / "logs"
+    log_dir = get_data_path("logs")
     log_dir.mkdir(parents=True, exist_ok=True)
 
     log_file = log_dir / f"app_{datetime.now().strftime('%Y%m%d')}.log"

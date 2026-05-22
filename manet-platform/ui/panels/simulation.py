@@ -11,6 +11,7 @@ from typing import Callable, Optional
 
 from ui.theme import COLORS, FONTS, SPACING, RADIUS, PROTOCOL_COLORS
 from backend.sim_runner import SimConfig
+from backend.paths import get_resource_path
 
 
 class SimulationPanel(ctk.CTkScrollableFrame):
@@ -39,7 +40,7 @@ class SimulationPanel(ctk.CTkScrollableFrame):
 
     def _load_presets(self) -> dict:
         try:
-            p = Path(__file__).parent.parent.parent / "configs" / "presets.json"
+            p = get_resource_path("configs", "presets.json")
             with open(p) as f:
                 return json.load(f)
         except Exception:

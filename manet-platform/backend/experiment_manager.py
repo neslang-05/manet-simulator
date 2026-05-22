@@ -10,12 +10,14 @@ from pathlib import Path
 from typing import Optional
 
 
+from backend.paths import get_data_path
+
 class ExperimentManager:
     """Manages experiment history stored as JSON records."""
 
     def __init__(self, history_dir: str = None):
         if history_dir is None:
-            history_dir = str(Path(__file__).parent.parent / "outputs" / "history")
+            history_dir = str(get_data_path("outputs", "history"))
         self.history_dir = Path(history_dir)
         self.history_dir.mkdir(parents=True, exist_ok=True)
         self.history_file = self.history_dir / "experiments.json"

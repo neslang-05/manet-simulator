@@ -303,42 +303,70 @@ The application opens with 7 panels accessible from the left sidebar:
 
 ---
 
-## Running Simulations via Shell Scripts
+## Running Simulations & NetAnim step-by-step for Each Algorithm
 
-If you want to run a raw NS-3 simulation without the GUI (e.g., for quick testing or CI), use the provided shell scripts directly inside **WSL**.
+Each of the four routing algorithms (AODV, DSDV, DSR, OLSR) can be simulated and visualized either via the **GUI Platform** or **Shell Scripts** inside WSL. Below are the step-by-step instructions.
 
-### Steps
+### 1. Verification of Simulation Binaries
+Before running, make sure the compilation targets for each algorithm are built inside NS-3. 
+- **Automatic**: Click **"Install & Build Sim"** on the GUI Simulation or Diagnostics panel. It copies and compiles all files.
+- **Manual**: Run `bash manet-platform/ns3/install.sh` in WSL. This compiles:
+  - `manet-sim` (Unified simulator for GUI)
+  - `lab-aodv` (AODV stand-alone)
+  - `dsdv-manet` (DSDV stand-alone)
+  - `lab-dsr` (DSR stand-alone)
+  - `lab-olsr` (OLSR stand-alone)
 
-1. Open Ubuntu (WSL terminal)
-2. Navigate to the cloned repo:
+---
 
-```bash
-cd /mnt/c/Users/<YourWindowsUsername>/manet-simulator
-```
+### 2. Running Simulations Step-by-Step
 
-3. Run the desired protocol:
+#### Method A: Via the Python GUI Platform (Recommended)
+1. Open Windows Terminal/PowerShell and run:
+   ```powershell
+   python manet-platform/main.py
+   ```
+2. Navigate to the **Simulation** configuration panel.
+3. Choose the desired routing protocol from the dropdown menu (e.g., **AODV**).
+4. Set the parameters (number of nodes, speed, simulation time, area, energy capacity, etc.) or click one of the presets.
+5. Click the green **"Run Simulation"** button. The app will navigate to the Console panel, where you can watch NS-3 build/execute output in real-time.
+6. Once complete, NetAnim will automatically launch with the generated XML animation file (e.g., `outputs/<timestamp>/manet-animation.xml`), and the Graphs panel will display the analyzed results.
 
-```bash
-# AODV
-bash run_aodv.sh
+#### Method B: Via CLI/Shell Scripts (Standalone Mode)
+If you prefer running the raw simulation scripts:
+1. Open the **WSL/Ubuntu terminal**.
+2. Navigate to your cloned repository path:
+   ```bash
+   cd /mnt/c/Users/<YourWindowsUsername>/manet-simulator
+   ```
+3. Run the shell script corresponding to the algorithm you wish to simulate:
+   - **AODV**: `bash run_aodv.sh` (runs `lab-aodv.cc`, generates `aodv-animation.xml`)
+   - **DSDV**: `bash run_dsdv.sh` (runs `dsdv-manet.cc`, generates `dsdv-animation.xml`)
+   - **DSR**: `bash run_dsr.sh` (runs `lab-dsr.cc`, generates `dsr-animation.xml`)
+   - **OLSR**: `bash run_olsr.sh` (runs `lab-olsr.cc`, generates `olsr-animation.xml`)
+4. The script will execute the NS-3 simulation, copy the animation XML file back into your main workspace directory, and automatically launch **NetAnim** pointing to that XML file.
 
-# DSDV
-bash run_dsdv.sh
+---
 
-# DSR
-bash run_dsr.sh
+### 3. Setting Up NetAnim Visualization (Step-by-Step)
+Once NetAnim launches, configure the visual playback for optimal observation:
 
-# OLSR
-bash run_olsr.sh
-```
-
-### What each script does
-
-1. Runs the NS-3 simulation for that protocol
-2. Copies the generated `*-animation.xml` file back to the project folder
-3. Automatically opens the animation in **NetAnim**
-
-> **Note:** The shell scripts require the individual protocol simulation files (`lab-aodv`, `dsdv-manet`, `lab-dsr`, `lab-olsr`) to already be compiled in NS-3. These are separate from `manet-sim.cc` (used by the GUI). Make sure you've compiled your NS-3 scratch programs before running these scripts.
+1. **Load the Animation File**:
+   - If NetAnim did not auto-load the trace, click the **Open folder/file icon** (top-left of the NetAnim toolbar).
+   - In the file dialog, navigate to the simulation output directory and select the generated XML trace file (e.g., `aodv-animation.xml`, `dsdv-animation.xml`, or `manet-animation.xml`).
+2. **Adjust Node Display Sizes**:
+   - By default, nodes might appear extremely small or large depending on your screen resolution.
+   - Locate the **Node Size** slider or numeric field in the top toolbar (usually defaults to 1.0 or 2.0).
+   - Set the Node Size to **5.0 or 10.0** to make the nodes clearly visible.
+3. **Control Update Rate (Speed)**:
+   - Use the **Update Rate (s)** slider in the top toolbar to adjust how fast the simulation runs.
+   - For a 60-second simulation, setting the update rate to **0.1s** or **0.05s** provides a smooth, observable playback speed.
+4. **Enable Packet Transmission Visuals**:
+   - To visualize routing packets (request/reply transmissions) and data packet hops, check the **"Packets"** or **"Packet Transmission"** checkboxes in the left/top settings.
+   - This will draw color-coded lines and arrows between nodes when they transmit packets (e.g., blue lines for routing overhead, green/red for data transmissions).
+5. **Start Playback**:
+   - Click the green **Play (Right Arrow)** button in the top left.
+   - You will see the mobile nodes moving according to the configured mobility model (Random Waypoint) and transmitting packets dynamically. Use the pause/stop buttons to inspect specific events.
 
 ---
 
