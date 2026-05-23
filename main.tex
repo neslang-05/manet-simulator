@@ -1,0 +1,377 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{caption}
+
+\geometry{
+    top=1in,
+    bottom=1in,
+    left=1.25in,
+    right=1in
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Laboratory Notebook: MANET Routing Protocols Simulation},
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    keywordstyle=\color{blue},
+    stringstyle=\color{magenta},
+    commentstyle=\color{green!60!black}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{MANET Routing Protocols Simulation Lab Notebook}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    {\scshape\LARGE Laboratory Notebook \par}
+    \vspace{1.5cm}
+    {\huge\bfseries Simulation of MANET Routing Protocols using NS-3\par}
+    \vspace{2cm}
+    
+    {\Large\itshape Prepared by \par}
+    \vspace{0.5cm}
+    {\Large [Your Name] \par}
+    {\large Roll Number: [Your Roll Number] \par}
+    {\large Semester: 8th Semester, B.Tech \par}
+    
+    \vfill
+    
+    {\large Submitted to \par}
+    {\Large \textbf{[Instructor / Professor Name]} \par}
+    
+    \vspace{2cm}
+    {\large \today\par}
+\end{titlepage}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+
+%---------------------------------------------------------
+% LAB 1
+%---------------------------------------------------------
+\chapter{Introduction to MANET, NS-3 and NetAnim}
+
+\section{Objective}
+To understand the basics of Mobile Ad-Hoc Networks (MANET), the Network Simulator 3 (NS-3), and the NetAnim visualization tool.
+
+\section{Introduction to MANET}
+A Mobile Ad-Hoc Network (MANET) is a continuously self-configuring, infrastructure-less network of mobile devices connected wirelessly. Each device in a MANET is free to move independently in any direction, changing its links to other devices frequently. 
+Key characteristics include:
+\begin{itemize}
+    \item Dynamic topologies.
+    \item Bandwidth-constrained, variable capacity links.
+    \item Energy-constrained operation.
+    \item Limited physical security.
+\end{itemize}
+
+\section{Introduction to NS-3}
+NS-3 (Network Simulator 3) is a discrete-event network simulator tailored for internet systems. It acts as an open environment for researchers, educators, and developers to model and study the performance of networks.
+Unlike NS-2, NS-3 is written entirely in C++ with optional Python bindings. 
+
+\section{Introduction to NetAnim}
+NetAnim is a standalone, Qt-based software tool that animates NS-3 simulations. It parses an XML trace file generated during the NS-3 simulation to display the topology, node movements, and wireless packet transmissions interactively.
+
+\section{Conclusion}
+Studied the foundational concepts of MANET, architecture of the NS-3 simulator, and capabilities of the NetAnim visualization suite.
+
+%---------------------------------------------------------
+% LAB 2
+%---------------------------------------------------------
+\chapter{Setting and Configuration of NS-3 using Python GUI}
+
+\section{Objective}
+To configure NS-3 for simulation and set up a custom Python-based GUI platform by cloning the required Git repository.
+
+\section{System Requirements}
+\begin{itemize}
+    \item \textbf{Hardware:} Minimum 4GB RAM (8GB recommended), 20GB Free Disk Space, multi-core CPU.
+    \item \textbf{OS:} Ubuntu 22.04 / Windows Subsystem for Linux (WSL).
+    \item \textbf{Software Needs:} Python 3.10+, NS-3 (version 3.37 or above), NetAnim.
+\end{itemize}
+
+\section{Steps for Configuration via Git}
+\begin{enumerate}
+    \item \textbf{Install Prerequisites in WSL/Ubuntu}:
+\begin{lstlisting}[language=bash]
+sudo apt update && sudo apt upgrade
+sudo apt install python3 python3-pip git qt5-default
+\end{lstlisting}
+
+    \item \textbf{Clone the Git Repository}:
+\begin{lstlisting}[language=bash]
+git clone https://github.com/neslang-05/manet-simulator.git
+cd manet-simulator
+\end{lstlisting}
+
+    \item \textbf{Install Python Requirements}:
+\begin{lstlisting}[language=bash]
+cd manet-platform
+pip install -r requirements.txt
+\end{lstlisting}
+
+    \item \textbf{Run the Python GUI}:
+\begin{lstlisting}[language=bash]
+python3 main.py
+\end{lstlisting}
+\end{enumerate}
+
+\section{Python GUI Features}
+The bespoke Python GUI allows the user to:
+\begin{itemize}
+    \item Select the MANET routing algorithm (AODV, DSDV, DSR, OLSR).
+    \item Adjust node counts, mobility speed, simulation time, and pause times.
+    \item Run comparative analyses automatically.
+    \item View generated graphs (Throughput, PDR, Delay) in real-time.
+\end{itemize}
+
+\section{Conclusion}
+Successfully configured the simulation environment by cloning the GitHub repository and launching the customized Python interface to manage NS-3 simulations.
+
+%---------------------------------------------------------
+% LAB 3
+%---------------------------------------------------------
+\chapter{Simulation of DSDV Routing Algorithm}
+
+\section{Objective}
+To simulate the Destination-Sequenced Distance-Vector (DSDV) routing protocol using NS-3, extract output metrics, plot graphs, and analyze its performance.
+
+\section{Theory}
+DSDV is a proactive (table-driven) routing protocol for MANETs based on the Bellman-Ford algorithm. In DSDV, each node maintains a routing table listing all available destinations, the number of hops to reach them, and sequence numbers assigned by the destination to prevent routing loops.
+
+\section{Hardware and Software Requirements}
+\begin{itemize}
+    \item Processor: Intel Core i5 or AMD Ryzen 5
+    \item RAM: 8 GB
+    \item OS: Windows 11 with WSL2 (Ubuntu 22.04)
+    \item Tools: NS-3 network simulator, Python Platform (matplotlib, pandas).
+\end{itemize}
+
+\section{Simulation Parameters}
+\begin{table}[H]
+    \centering
+    \caption{DSDV Simulation Parameters}
+    \begin{tabular}{@{}ll@{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\ \midrule
+    Protocol & DSDV \\
+    Number of Nodes & 50 \\
+    Simulation Time & 100 seconds \\
+    Mobility Model & Random Waypoint \\
+    MAC Layer & IEEE 802.11b \\
+    Traffic Type & CBR / UDP \\
+    Grid Area & 1000m $\times$ 1000m \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Diagrams}
+\begin{figure}[H]
+    \centering
+    % Placeholder for actual NetAnim image
+    \fbox{\parbox[c][5cm][c]{0.8\textwidth}{\centering \textit{Insert NetAnim snapshot of DSDV Simulation Here}}}
+    \caption{NetAnim Visualization of DSDV Protocol}
+\end{figure}
+
+\section{Graphs and Results}
+After running `run\_dsdv.sh` via the Python GUI, the following metrics were generated:
+\begin{itemize}
+    \item \textbf{Packet Delivery Ratio (PDR):} [Insert value, e.g., 85\%]
+    \item \textbf{Average End-to-End Delay:} [Insert value, e.g., 20ms]
+    \item \textbf{Throughput:} [Insert value, e.g., 300 Kbps]
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering \textit{Insert PDR/Delay/Throughput Graph Here}}}
+    \caption{DSDV Performance Graphs}
+\end{figure}
+
+\section{Conclusion}
+The simulation of the DSDV protocol indicates significant routing overhead due to periodic table exchanges, but consistently low latency since routes are proactively available.
+
+%---------------------------------------------------------
+% LAB 4
+%---------------------------------------------------------
+\chapter{Simulation of DSR Routing Algorithm}
+
+\section{Objective}
+To simulate the Dynamic Source Routing (DSR) protocol in a MANET environment to analyze its packet delivery, delay, and throughput metrics.
+
+\section{Theory}
+DSR is a reactive (on-demand) routing protocol designed specifically for use in multi-hop wireless ad hoc networks. It uses \textit{source routing}, meaning the sender knows the complete hop-by-hop route to the destination. It operates via two mechanisms: Route Discovery and Route Maintenance.
+
+\section{Hardware and Software Requirements}
+Same as Chapter 3.
+
+\section{Simulation Parameters}
+\begin{table}[H]
+    \centering
+    \caption{DSR Simulation Parameters}
+    \begin{tabular}{@{}ll@{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\ \midrule
+    Protocol & DSR \\
+    Number of Nodes & 50 \\
+    Simulation Time & 100 seconds \\
+    Mobility Model & Random Waypoint \\
+    MAC Layer & IEEE 802.11b \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Diagrams}
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][5cm][c]{0.8\textwidth}{\centering \textit{Insert NetAnim snapshot of DSR Simulation Here}}}
+    \caption{NetAnim Visualization of DSR Protocol}
+\end{figure}
+
+\section{Graphs and Results}
+Executing the simulation script `run\_dsr.sh` or selecting DSR from the Python Platform generated the following outputs:
+\begin{itemize}
+    \item \textbf{Packet Delivery Ratio (PDR):} [Insert value]
+    \item \textbf{Average End-to-End Delay:} [Insert value]
+    \item \textbf{Throughput:} [Insert value]
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering \textit{Insert PDR/Delay/Throughput Graph Here}}}
+    \caption{DSR Performance Graphs}
+\end{figure}
+
+\section{Conclusion}
+DSR minimizes the routing overhead compared to periodic protocols (like DSDV). However, due to its source-routing mechanism, packet payload sizes increase proportionally with the path length, which impacts performance at larger scales.
+
+%---------------------------------------------------------
+% LAB 5
+%---------------------------------------------------------
+\chapter{Simulation of AODV Routing Algorithm}
+
+\section{Objective}
+To simulate the Ad hoc On-Demand Distance Vector (AODV) routing protocol and graphically analyze its operational efficiency in dense node settings.
+
+\section{Theory}
+AODV is a reactive routing protocol that builds on DSDV's sequence numbers to prevent loops but discovers routes entirely on demand, similar to DSR. It uses Route Request (RREQ), Route Reply (RREP), and Route Error (RERR) control messages to establish and maintain routes.
+
+\section{Hardware and Software Requirements}
+Same as Chapter 3.
+
+\section{Simulation Parameters}
+\begin{table}[H]
+    \centering
+    \caption{AODV Simulation Parameters}
+    \begin{tabular}{@{}ll@{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\ \midrule
+    Protocol & AODV \\
+    Number of Nodes & 50 \\
+    Simulation Time & 100 seconds \\
+    Mobility Model & Random Waypoint \\
+    MAC Layer & IEEE 802.11b \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Diagrams}
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][5cm][c]{0.8\textwidth}{\centering \textit{Insert NetAnim snapshot of AODV Simulation Here}}}
+    \caption{NetAnim Visualization of AODV Protocol}
+\end{figure}
+
+\section{Graphs and Results}
+Running `run\_aodv.sh` resulted in the generation of detailed trace histories and graphs parsing through `analysis/graph_generator.py`. 
+\begin{itemize}
+    \item \textbf{Packet Delivery Ratio (PDR):} [Insert value]
+    \item \textbf{Average End-to-End Delay:} [Insert value]
+    \item \textbf{Throughput:} [Insert value]
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering \textit{Insert PDR/Delay/Throughput Graph Here}}}
+    \caption{AODV Performance Graphs}
+\end{figure}
+
+\section{Conclusion}
+The AODV simulator displayed an excellent balance of acceptable routing overhead and a high Packet Delivery Ratio, making it highly effective for dynamic environments featuring medium-to-high node mobility.
+
+%---------------------------------------------------------
+% LAB 6
+%---------------------------------------------------------
+\chapter{Simulation of OLSR Routing Algorithm}
+
+\section{Objective}
+To configure, simulate, and analyze the Optimized Link State Routing (OLSR) protocol under varying MANET scenarios utilizing the framework's analyzer module.
+
+\section{Theory}
+OLSR is a proactive link-state routing protocol optimization for mobile ad hoc networks. Instead of flooding control traffic completely, it employs Multi-Point Relays (MPRs) to drastically reduce the number of transmissions involved in flooding control messages, thus minimizing network overhead.
+
+\section{Hardware and Software Requirements}
+Same as Chapter 3.
+
+\section{Simulation Parameters}
+\begin{table}[H]
+    \centering
+    \caption{OLSR Simulation Parameters}
+    \begin{tabular}{@{}ll@{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\ \midrule
+    Protocol & OLSR \\
+    Number of Nodes & 50 \\
+    Simulation Time & 100 seconds \\
+    Mobility Model & Random Waypoint \\
+    MAC Layer & IEEE 802.11b \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Diagrams}
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][5cm][c]{0.8\textwidth}{\centering \textit{Insert NetAnim snapshot of OLSR Simulation Here}}}
+    \caption{NetAnim Visualization of OLSR Protocol}
+\end{figure}
+
+\section{Graphs and Results}
+Simulation driven through `run\_olsr.sh` or the unified GUI interface yielded the following analytics:
+\begin{itemize}
+    \item \textbf{Packet Delivery Ratio (PDR):} [Insert value]
+    \item \textbf{Average End-to-End Delay:} [Insert value]
+    \item \textbf{Throughput:} [Insert value]
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering \textit{Insert PDR/Delay/Throughput Graph Here}}}
+    \caption{OLSR Performance Graphs}
+\end{figure}
+
+\section{Conclusion}
+As expected from a proactive protocol utilizing MPRs, OLSR significantly reduces broadcast latency and provides very low end-to-end delays at the cost of continuous background signaling. It proves robust in dense networks.
+
+\end{document}

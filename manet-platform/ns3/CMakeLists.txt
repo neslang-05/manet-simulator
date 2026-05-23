@@ -12,7 +12,8 @@ cmake_minimum_required(VERSION 3.10)
 
 # ── Unified simulation (used by the Python GUI) ───────────────────────────────
 build_exec(
-  FILENAME manet-sim.cc
+  EXECNAME manet-sim
+  SOURCE_FILES manet-sim.cc
   LIBRARIES_TO_LINK
     ${libcore}
     ${libnetwork}
@@ -31,7 +32,8 @@ build_exec(
 
 # ── AODV stand-alone example ──────────────────────────────────────────────────
 build_exec(
-  FILENAME lab-aodv.cc
+  EXECNAME lab-aodv
+  SOURCE_FILES lab-aodv.cc
   LIBRARIES_TO_LINK
     ${libcore}
     ${libnetwork}
@@ -47,7 +49,8 @@ build_exec(
 
 # ── DSDV stand-alone example ──────────────────────────────────────────────────
 build_exec(
-  FILENAME dsdv-manet.cc
+  EXECNAME dsdv-manet
+  SOURCE_FILES dsdv-manet.cc
   LIBRARIES_TO_LINK
     ${libcore}
     ${libnetwork}
@@ -63,7 +66,8 @@ build_exec(
 
 # ── DSR stand-alone example ───────────────────────────────────────────────────
 build_exec(
-  FILENAME lab-dsr.cc
+  EXECNAME lab-dsr
+  SOURCE_FILES lab-dsr.cc
   LIBRARIES_TO_LINK
     ${libcore}
     ${libnetwork}
@@ -79,7 +83,8 @@ build_exec(
 
 # ── OLSR stand-alone example ──────────────────────────────────────────────────
 build_exec(
-  FILENAME lab-olsr.cc
+  EXECNAME lab-olsr
+  SOURCE_FILES lab-olsr.cc
   LIBRARIES_TO_LINK
     ${libcore}
     ${libnetwork}
