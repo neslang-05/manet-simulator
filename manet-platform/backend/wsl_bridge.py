@@ -296,7 +296,7 @@ class WSLBridge:
         cmd = (
             f"mkdir -p {output_dir_wsl} && "
             f"cd {self.NS3_DIR} && "
-            f"./ns3 run 'scratch/manet-sim {args}' 2>&1"
+            f"./ns3 run 'manet-sim {args}' 2>&1"
         )
         on_output(f"[WSL] Running: {cmd}")
         self.run_async(cmd, on_output, on_done)
