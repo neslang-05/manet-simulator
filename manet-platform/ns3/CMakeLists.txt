@@ -5,10 +5,27 @@
 # automatically when you click "Install & Build" in the Diagnostics panel).
 #
 # All four protocol examples + the unified manet-sim are built here.
-# Each executable links against ns3-netanim so NetAnim XML output works.
+# NetAnim is linked only if the netanim module is available.
 # =============================================================================
 
 cmake_minimum_required(VERSION 3.10)
+
+# ── Optional NetAnim linkage ──────────────────────────────────────────────────
+# libnetanim is only defined when the netanim module was successfully configured.
+# Guard every use to avoid "target to build does not exist" errors.
+if(DEFINED libnetanim AND NOT "${libnetanim}" STREQUAL "")
+  set(NETANIM_LIB ${libnetanim})
+  set(NETANIM_DEF "NS3_NETANIM")
+else()
+  set(NETANIM_LIB "")
+  set(NETANIM_DEF "")
+  message(STATUS "[manet-sim] NetAnim not available — building without animation support")
+endif()
+
+# Pass preprocessor flag to C++ so #ifdef NS3_NETANIM in manet-sim.cc works
+if(NETANIM_DEF)
+  add_compile_definitions(${NETANIM_DEF})
+endif()
 
 # ── Unified simulation (used by the Python GUI) ───────────────────────────────
 build_exec(
@@ -27,7 +44,7 @@ build_exec(
     ${libapplications}
     ${libflow-monitor}
     ${libenergy}
-    ${libnetanim}            # ← NetAnim library
+    ${NETANIM_LIB}
   EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
 
@@ -45,7 +62,7 @@ build_exec(
     ${libapplications}
     ${libflow-monitor}
     ${libenergy}
-    ${libnetanim}            # ← NetAnim library
+    ${NETANIM_LIB}
   EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
 
@@ -63,7 +80,7 @@ build_exec(
     ${libapplications}
     ${libflow-monitor}
     ${libenergy}
-    ${libnetanim}            # ← NetAnim library
+    ${NETANIM_LIB}
   EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
 
@@ -81,7 +98,7 @@ build_exec(
     ${libapplications}
     ${libflow-monitor}
     ${libenergy}
-    ${libnetanim}            # ← NetAnim library
+    ${NETANIM_LIB}
   EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
 
@@ -99,6 +116,6 @@ build_exec(
     ${libapplications}
     ${libflow-monitor}
     ${libenergy}
-    ${libnetanim}            # ← NetAnim library
+    ${NETANIM_LIB}
   EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )

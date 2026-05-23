@@ -293,7 +293,11 @@ class WSLBridge:
             f"--txRange={params['txRange']}",
             f"--outputDir={output_dir_wsl}",
         ])
+        repo_ns3_win = str(Path(__file__).resolve().parents[1] / "ns3")
+        install_script = f"{self._win_to_wsl(repo_ns3_win)}/install.sh"
         cmd = (
+            f"chmod +x '{install_script}' && "
+            f"bash '{install_script}' 2>&1 && "
             f"mkdir -p {output_dir_wsl} && "
             f"cd {self.NS3_DIR} && "
             f"./ns3 run 'scratch/manet-sim {args}' 2>&1"

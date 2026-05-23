@@ -25,11 +25,39 @@ class DiagnosticsPanel(ctk.CTkFrame):
     def __init__(self, parent, console=None, **kwargs):
         kwargs.setdefault("fg_color", COLORS["bg_secondary"])
         super().__init__(parent, **kwargs)
+        import queue
+        self._gui_queue = queue.Queue()
+        self._process_gui_queue()
         self._bridge  = WSLBridge()
         self._console = console
         self._status  = {}
         self._build_ui()
-        self.after(500, self.run_diagnostics)
+        self.safe_after(500, self.run_diagnostics)
+
+    def _process_gui_queue(self):
+        import queue
+        try:
+            while True:
+                callback = self._gui_queue.get_nowait()
+                try:
+                    callback()
+                except Exception as e:
+                    print(f"[DiagnosticsPanel] Error executing GUI callback: {e}")
+                self._gui_queue.task_done()
+        except queue.Empty:
+            pass
+        self.after(20, self._process_gui_queue)
+
+    def safe_after(self, delay, callback, *args):
+        """Thread-safe version of after()."""
+        import threading
+        if threading.current_thread() is threading.main_thread():
+            return self.after(delay, callback, *args)
+        else:
+            if delay == 0:
+                self._gui_queue.put(lambda: callback(*args))
+            else:
+                self._gui_queue.put(lambda: self.after(delay, callback, *args))
 
     def _build_ui(self):
         # Header
@@ -150,20 +178,20 @@ class DiagnosticsPanel(ctk.CTkFrame):
 
         def _worker():
             ok, msg = self._bridge.check_wsl()
-            self.after(0, lambda: self._set_status("wsl", ok, msg))
+            self.safe_after(0, lambda: self._set_status("wsl", ok, msg))
 
             ok, missing = self._bridge.check_build_tools()
             msg = "All build tools found" if ok else f"Missing: {', '.join(missing)}"
-            self.after(0, lambda: self._set_status("build_tools", ok, msg))
+            self.safe_after(0, lambda: self._set_status("build_tools", ok, msg))
 
             ok, msg = self._bridge.check_ns3()
-            self.after(0, lambda: self._set_status("ns3", ok, msg))
+            self.safe_after(0, lambda: self._set_status("ns3", ok, msg))
 
             ok, msg = self._bridge.check_netanim()
-            self.after(0, lambda: self._set_status("netanim", ok, msg))
+            self.safe_after(0, lambda: self._set_status("netanim", ok, msg))
 
             ok, msg = self._bridge.check_sim_installed()
-            self.after(0, lambda: self._set_status("sim", ok, msg))
+            self.safe_after(0, lambda: self._set_status("sim", ok, msg))
 
         threading.Thread(target=_worker, daemon=True).start()
 
@@ -177,7 +205,7 @@ class DiagnosticsPanel(ctk.CTkFrame):
             result[0] = res
             event.set()
 
-        self.after(0, ask)
+        self.safe_after(0, ask)
         event.wait()
         return result[0]
 
@@ -187,7 +215,7 @@ class DiagnosticsPanel(ctk.CTkFrame):
         success = [False]
 
         def on_out(line):
-            self.after(0, lambda: self._append_log(line))
+            self.safe_after(0, lambda: self._append_log(line))
 
         def on_done(rc):
             success[0] = (rc == 0)
@@ -197,7 +225,7 @@ class DiagnosticsPanel(ctk.CTkFrame):
         method = getattr(self._bridge, method_name)
         
         # Invoke the bridge method.
-        self.after(0, lambda: method(*args, on_out, on_done))
+        self.safe_after(0, lambda: method(*args, on_out, on_done))
         
         event.wait()
         return success[0]
@@ -205,10 +233,10 @@ class DiagnosticsPanel(ctk.CTkFrame):
     def _finish_wizard(self, success: bool):
         self._installing = False
         if success:
-            self.after(0, lambda: messagebox.showinfo("Success", "All dependencies, files, and simulation binaries have been successfully set up! You are ready to run simulations."))
+            self.safe_after(0, lambda: messagebox.showinfo("Success", "All dependencies, files, and simulation binaries have been successfully set up! You are ready to run simulations."))
         else:
-            self.after(0, lambda: messagebox.showwarning("Incomplete", "The setup wizard did not complete successfully. Please review the log for errors."))
-        self.after(0, self.run_diagnostics)
+            self.safe_after(0, lambda: messagebox.showwarning("Incomplete", "The setup wizard did not complete successfully. Please review the log for errors."))
+        self.safe_after(0, self.run_diagnostics)
 
     def _do_install(self):
         import os
@@ -231,7 +259,7 @@ class DiagnosticsPanel(ctk.CTkFrame):
             self._append_log("[Wizard] Checking WSL connectivity...")
             ok, msg = self._bridge.check_wsl()
             if not ok:
-                self.after(0, lambda: messagebox.showerror("WSL Missing", f"WSL 2 is not connected or not available.\nError: {msg}\n\nPlease install WSL2 and Ubuntu manually."))
+                self.safe_after(0, lambda: messagebox.showerror("WSL Missing", f"WSL 2 is not connected or not available.\nError: {msg}\n\nPlease install WSL2 and Ubuntu manually."))
                 self._finish_wizard(False)
                 return
             self._append_log("[Wizard] WSL is available.")
@@ -330,7 +358,7 @@ class DiagnosticsPanel(ctk.CTkFrame):
             ok, out = self._bridge.run_sync(
                 f"cd ~/ns-3-dev && ./ns3 --version 2>&1"
             )
-            self.after(0, lambda: self._append_log(out))
+            self.safe_after(0, lambda: self._append_log(out))
         threading.Thread(target=_worker, daemon=True).start()
 
     def get_status(self) -> dict:

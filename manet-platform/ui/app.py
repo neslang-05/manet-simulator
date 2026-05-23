@@ -58,6 +58,11 @@ class ManetApp(ctk.CTk):
 
         self.configure(fg_color=COLORS["bg_primary"])
 
+        # ── Thread-Safe GUI Queue ─────────────────────────────────────────
+        import queue
+        self._gui_queue = queue.Queue()
+        self._process_gui_queue()
+
         # ── Backend ───────────────────────────────────────────────────────
         self._runner = SimRunner()
         self._exp_mgr = ExperimentManager()
@@ -79,6 +84,31 @@ class ManetApp(ctk.CTk):
 
         # ── Run startup diagnostics ───────────────────────────────────────
         self.after(1000, self._run_startup_checks)
+
+    def _process_gui_queue(self):
+        import queue
+        try:
+            while True:
+                callback = self._gui_queue.get_nowait()
+                try:
+                    callback()
+                except Exception as e:
+                    print(f"[ManetApp] Error executing GUI callback: {e}")
+                self._gui_queue.task_done()
+        except queue.Empty:
+            pass
+        self.after(20, self._process_gui_queue)
+
+    def safe_after(self, delay, callback, *args):
+        """Thread-safe version of after()."""
+        import threading
+        if threading.current_thread() is threading.main_thread():
+            return self.after(delay, callback, *args)
+        else:
+            if delay == 0:
+                self._gui_queue.put(lambda: callback(*args))
+            else:
+                self._gui_queue.put(lambda: self.after(delay, callback, *args))
 
     # ── Sidebar ──────────────────────────────────────────────────────────────
     def _build_sidebar(self):
@@ -284,7 +314,7 @@ class ManetApp(ctk.CTk):
 
     def _handle_log(self, line: str):
         """Thread-safe log to console."""
-        self.after(0, lambda: self._console_panel.log(line))
+        self.safe_after(0, lambda: self._console_panel.log(line))
 
     def _handle_sim_done(self, success: bool, result: dict):
         """Called when simulation finishes."""
@@ -315,7 +345,7 @@ class ManetApp(ctk.CTk):
                 self._console_panel.log_error("❌ Simulation failed.")
                 self._set_status("❌ Simulation failed")
 
-        self.after(0, _finish)
+        self.safe_after(0, _finish)
 
     def _generate_graphs(self, output_dir: str, protocol: str):
         """Generate all analysis graphs in background thread."""
@@ -330,9 +360,9 @@ class ManetApp(ctk.CTk):
                     self._results_panel.load_results(output_dir, protocol)
                     self._set_status(f"✅ Done — {len(paths)} graphs generated")
 
-                self.after(0, _update_ui)
+                self.safe_after(0, _update_ui)
             except Exception as e:
-                self.after(0, lambda: self._set_status(f"Graph error: {e}"))
+                self.safe_after(0, lambda: self._set_status(f"Graph error: {e}"))
 
         threading.Thread(target=_worker, daemon=True).start()
 
@@ -401,12 +431,14 @@ class ManetApp(ctk.CTk):
                         text_color=COLORS["danger"]
                     )
                 
-                # Auto-load latest experiment if available
+                # Auto-load latest valid experiment if available
                 exps = self._history_panel._manager.get_all()
-                if exps:
-                    latest = exps[0]
-                    self._on_load_results(latest.get("output_win", ""), latest.get("protocol", "?"))
-                    self.navigate_to("simulation") # Stay on simulation tab on launch
+                for exp in exps:
+                    p = exp.get("output_win", "")
+                    if p and Path(p).exists():
+                        self._on_load_results(p, exp.get("protocol", "?"))
+                        break
+                self.navigate_to("simulation") # Stay on simulation tab on launch
 
-            self.after(0, _update)
+            self.safe_after(0, _update)
         threading.Thread(target=_check, daemon=True).start()

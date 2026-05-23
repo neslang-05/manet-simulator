@@ -57,8 +57,23 @@ fi
 cd "$NS3_DIR" || exit 1
 
 echo ""
+echo "[install.sh] Configuring NS-3 to detect any new scratch targets..."
+echo ""
+./ns3 configure --enable-examples 2>&1
+
+echo ""
 echo "[install.sh] Building all MANET simulations (this may take a few minutes)..."
 echo ""
+
+# ── WSL clock-skew fix ────────────────────────────────────────────────────────
+# WSL clocks can drift from the Windows host clock. This causes GNU make to see
+# object files with "future" timestamps and abort mid-build with:
+#   "Clock skew detected. Your build may be incomplete."
+# Touching all existing .o files in the cmake-cache resets their timestamps so
+# make no longer complains.
+if [ -d "$NS3_DIR/cmake-cache" ]; then
+    find "$NS3_DIR/cmake-cache" -name "*.o" -exec touch {} + 2>/dev/null || true
+fi
 
 ./ns3 build scratch/manet-sim  2>&1
 BUILD_MAIN=$?

@@ -18,7 +18,9 @@
 #include "ns3/applications-module.h"
 #include "ns3/flow-monitor-module.h"
 #include "ns3/energy-module.h"
+#ifdef NS3_NETANIM
 #include "ns3/netanim-module.h"       // ← NetAnim header
+#endif
 
 using namespace ns3;
 using namespace ns3::energy;
@@ -153,6 +155,7 @@ int main(int argc, char *argv[])
 
     // ── NetAnim ────────────────────────────────────────────────────
     // Creates the XML animation file to be opened in NetAnim GUI
+#ifdef NS3_NETANIM
     AnimationInterface anim(animFile);
     anim.SetMaxPktsPerTraceFile(500000);
     for (uint32_t i = 0; i < nNodes; i++)
@@ -161,6 +164,7 @@ int main(int argc, char *argv[])
         // Green colour to identify DSDV nodes
         anim.UpdateNodeColor(nodes.Get(i), 0, 153, 76);
     }
+#endif
 
     // ── Run ────────────────────────────────────────────────────────
     Simulator::Stop(Seconds(simTime));
