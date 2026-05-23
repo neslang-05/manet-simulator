@@ -28,6 +28,7 @@ build_exec(
     ${libflow-monitor}
     ${libenergy}
     ${libnetanim}            # ← NetAnim library
+  EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
 
 # ── AODV stand-alone example ──────────────────────────────────────────────────
@@ -45,6 +46,7 @@ build_exec(
     ${libflow-monitor}
     ${libenergy}
     ${libnetanim}            # ← NetAnim library
+  EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
 
 # ── DSDV stand-alone example ──────────────────────────────────────────────────
@@ -62,6 +64,7 @@ build_exec(
     ${libflow-monitor}
     ${libenergy}
     ${libnetanim}            # ← NetAnim library
+  EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
 
 # ── DSR stand-alone example ───────────────────────────────────────────────────
@@ -79,6 +82,7 @@ build_exec(
     ${libflow-monitor}
     ${libenergy}
     ${libnetanim}            # ← NetAnim library
+  EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
 
 # ── OLSR stand-alone example ──────────────────────────────────────────────────
@@ -96,4 +100,5 @@ build_exec(
     ${libflow-monitor}
     ${libenergy}
     ${libnetanim}            # ← NetAnim library
+  EXECUTABLE_DIRECTORY_PATH ${CMAKE_OUTPUT_DIRECTORY}/scratch/
 )
